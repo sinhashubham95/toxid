@@ -5,17 +5,18 @@ import {
   Route
 } from "react-router-dom";
 
-import Auth from "./containers/Auth";
-import SignInEmailPassword from "./containers/auth/SignInEmailPassword";
+import AuthSignInEmailPassword from "./containers/AuthSignInEmailPassword";
+import AuthSignUpEmailPassword from "./containers/AuthSignUpEmailPassword";
 
 function App() {
   return (
     <Router>
       <Switch>
         <Route path="/">
-          <Auth>
-            <SignInEmailPassword />
-          </Auth>
+          <AuthSignInEmailPassword />
+        </Route>
+        <Route path="/signUp">
+          <AuthSignUpEmailPassword />
         </Route>
       </Switch>
     </Router>
