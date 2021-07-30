@@ -3,9 +3,9 @@ import { Avatar, Button, Grid, Link, makeStyles, TextField, Typography, Circular
 import { LockOutlined } from '@material-ui/icons';
 import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { AuthInfo, AuthProps } from '../../types/auth';
+import { AuthErrorInfo, AuthProps } from '../../types/auth';
 
-const EmailPassword: FunctionComponent<AuthProps> = ({
+const ResetEmailPassword: FunctionComponent<AuthProps> = ({
   title,
   method,
   extras,
@@ -18,13 +18,14 @@ const EmailPassword: FunctionComponent<AuthProps> = ({
 
   const [loading, setLoading] = useState(false);
   const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
 
   const onSubmit = async () => {
     setLoading(true);
-    const result: AuthInfo = await method(email, password);
-    if (result.error) {
-      showErrorMessage(result.error.message);
+    const error: AuthErrorInfo = await method(email);
+    if (error) {
+      showErrorMessage(error.message);
+    } else {
+      showSuccessMessage(t('successReset'));
     }
     setLoading(false);
   };
@@ -50,19 +51,6 @@ const EmailPassword: FunctionComponent<AuthProps> = ({
           value={email}
           onChange={(event) => setEmail(event.target.value)}
           autoFocus
-        />
-        <TextField
-          variant="outlined"
-          margin="normal"
-          required
-          fullWidth
-          name="password"
-          label={t('password')}
-          type="password"
-          id="password"
-          autoComplete="current-password"
-          value={password}
-          onChange={(event) => setPassword(event.target.value)}
         />
         {loading && (
           <CircularProgress />
@@ -113,4 +101,4 @@ const useStyles = makeStyles(theme => ({
   },
 }));
 
-export default EmailPassword;
+export default ResetEmailPassword;

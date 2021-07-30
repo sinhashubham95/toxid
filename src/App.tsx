@@ -7,6 +7,7 @@ import {
 
 import AuthSignInEmailPassword from "./containers/AuthSignInEmailPassword";
 import AuthSignUpEmailPassword from "./containers/AuthSignUpEmailPassword";
+import AuthResetEmailPassword from "./containers/AuthResetEmailPassword";
 
 function App() {
   return (
@@ -14,6 +15,9 @@ function App() {
       <Switch>
         <Route path="/signUp">
           <AuthSignUpEmailPassword />
+        </Route>
+        <Route path="/forgotPassword">
+          <AuthResetEmailPassword />
         </Route>
         <Route path="/">
           <AuthSignInEmailPassword />

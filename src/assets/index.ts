@@ -1,5 +1,7 @@
+import logo from './logo.png';
+
 const Images = {
-  logo: require('./logo.png'),
+  logo,
 };
 
 export default Images;

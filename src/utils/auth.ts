@@ -1,5 +1,5 @@
 import firebase from 'firebase';
-import { AuthInfo, AuthState } from '../types/auth';
+import { AuthErrorInfo, AuthInfo, AuthState } from '../types/auth';
 
 class Auth {
   private readonly auth = firebase.auth();
@@ -73,6 +73,18 @@ class Auth {
           code: e.code,
           message: e.message,
         },
+      };
+    }
+  };
+
+  sendPasswordResetEmail = async (email: string): Promise<AuthErrorInfo | null> => {
+    try {
+      await this.auth.sendPasswordResetEmail(email);
+      return null;
+    } catch (e) {
+      return {
+        code: e.code,
+        message: e.message,
       };
     }
   };

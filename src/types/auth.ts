@@ -1,4 +1,6 @@
-export type ErrorInfo = {
+import { CommonProps } from "./common";
+
+export type AuthErrorInfo = {
   code: string;
   message: string;
 };
@@ -8,24 +10,24 @@ export enum AuthState {
   SignedOut
 };
 
-export type AuthDetails = {
+export interface AuthDetails {
   userId: string;
   displayName: string | null;
   email: string | null;
 };
 
-export type AuthInfo = {
+export interface AuthInfo {
   state: AuthState;
   details?: AuthDetails;
-  error?: ErrorInfo;
+  error?: AuthErrorInfo;
 };
 
-export type AuthExtra = {
+export interface AuthExtra {
   title: string;
   link: string;
 };
 
-export type AuthProps = {
+export interface AuthProps extends CommonProps {
   title: string;
   method: Function;
   extras: Array<AuthExtra>;
