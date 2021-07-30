@@ -1,5 +1,6 @@
 const ENTranslations = {
   signIn: "Sign In",
+  signUp: "Sign Up",
   email: "Email Address",
   password: "Password",
   forgotPassword: "Forgot Password?",

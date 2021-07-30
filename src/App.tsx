@@ -12,11 +12,11 @@ function App() {
   return (
     <Router>
       <Switch>
-        <Route path="/">
-          <AuthSignInEmailPassword />
-        </Route>
         <Route path="/signUp">
           <AuthSignUpEmailPassword />
+        </Route>
+        <Route path="/">
+          <AuthSignInEmailPassword />
         </Route>
       </Switch>
     </Router>

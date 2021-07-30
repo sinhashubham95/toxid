@@ -4,7 +4,7 @@ import auth from '../utils/auth';
 
 const AuthSignUpEmailPassword = withAuth(
   EmailPassword,
-  'signIn',
+  'signUp',
   auth.signUpWithEmailPassword,
   [
     {

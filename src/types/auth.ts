@@ -10,8 +10,8 @@ export enum AuthState {
 
 export type AuthDetails = {
   userId: string;
-  displayName: string;
-  email: string;
+  displayName: string | null;
+  email: string | null;
 };
 
 export type AuthInfo = {
@@ -23,4 +23,10 @@ export type AuthInfo = {
 export type AuthExtra = {
   title: string;
   link: string;
+};
+
+export type AuthProps = {
+  title: string;
+  method: Function;
+  extras: Array<AuthExtra>;
 };

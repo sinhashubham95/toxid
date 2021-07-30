@@ -26,14 +26,19 @@ class Auth {
   signInWithEmailPassword = async (email: string, password: string): Promise<AuthInfo> => {
     try {
       const { user } = await this.auth.signInWithEmailAndPassword(email, password);
-      return {
-        state: AuthState.SignedIn,
-        details: {
-          userId: user.uid,
-          displayName: user.displayName,
-          email: user.email,
-        },
+      if (user) {
+        return {
+          state: AuthState.SignedIn,
+          details: {
+            userId: user.uid,
+            displayName: user.displayName,
+            email: user.email,
+          },
+        };
       }
+      return {
+        state: AuthState.SignedOut,
+      };
     } catch (e) {
       return {
         state: AuthState.SignedOut,
@@ -48,14 +53,19 @@ class Auth {
   signUpWithEmailPassword = async (email: string, password: string): Promise<AuthInfo> => {
     try {
       const { user } = await this.auth.createUserWithEmailAndPassword(email, password);
-      return {
-        state: AuthState.SignedIn,
-        details: {
-          userId: user.uid,
-          displayName: user.displayName,
-          email: user.email,
-        },
+      if (user) {
+        return {
+          state: AuthState.SignedIn,
+          details: {
+            userId: user.uid,
+            displayName: user.displayName,
+            email: user.email,
+          },
+        };
       }
+      return {
+        state: AuthState.SignedOut,
+      };
     } catch (e) {
       return {
         state: AuthState.SignedOut,

@@ -1,10 +1,11 @@
-import React from 'react';
+import { FunctionComponent } from 'react';
 import { Avatar, Button, Grid, Link, makeStyles, TextField, Typography, CircularProgress } from '@material-ui/core';
 import { LockOutlined } from '@material-ui/icons';
 import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
+import { AuthProps } from '../../types/auth';
 
-const EmailPassword = ({ title, method, extras }) => {
+const EmailPassword: FunctionComponent<AuthProps> = ({ title, method, extras }) => {
   const classes = useStyles();
 
   const { t } = useTranslation();
@@ -38,6 +39,7 @@ const EmailPassword = ({ title, method, extras }) => {
           name="email"
           autoComplete="email"
           value={email}
+          onChange={(event) => setEmail(event.target.value)}
           autoFocus
         />
         <TextField
@@ -51,6 +53,7 @@ const EmailPassword = ({ title, method, extras }) => {
           id="password"
           autoComplete="current-password"
           value={password}
+          onChange={(event) => setPassword(event.target.value)}
         />
         {loading && (
           <CircularProgress />
@@ -68,8 +71,8 @@ const EmailPassword = ({ title, method, extras }) => {
           </Button>
         )}
         <Grid container>
-          {extras.map(({ title, link }) => (
-            <Grid item>
+          {extras.map(({ title, link }, index) => (
+            <Grid key={title} item xs={index === 0}>
               <Link href={link} variant="body2">
                 {t(title)}
               </Link>
