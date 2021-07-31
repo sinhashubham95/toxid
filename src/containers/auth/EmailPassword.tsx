@@ -1,4 +1,4 @@
-import { FunctionComponent } from 'react';
+import { FunctionComponent, MouseEventHandler } from 'react';
 import {
   Avatar,
   Button,
@@ -9,14 +9,19 @@ import {
   Typography,
   CircularProgress,
   SvgIconTypeMap,
+  FormControl,
+  InputLabel,
+  OutlinedInput,
+  IconButton,
 } from '@material-ui/core';
-import { LockOutlined } from '@material-ui/icons';
+import { LockOutlined, Visibility, VisibilityOff } from '@material-ui/icons';
 import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { AuthInfo, AuthProps } from '../../types/auth';
 import withButtonColor from '../../components/hoc/withButtonColor';
 import { OverridableComponent } from '@material-ui/core/OverridableComponent';
 import { ChangeEventHandler } from 'react';
+import { InputAdornment } from '@material-ui/core';
 
 const EmailPassword: FunctionComponent<AuthProps> = ({
   title,
@@ -31,7 +36,12 @@ const EmailPassword: FunctionComponent<AuthProps> = ({
 
   const [loading, setLoading] = useState(false);
   const [email, setEmail] = useState('');
+  const [showPassword, setShowPassword] = useState(false);
   const [password, setPassword] = useState('');
+
+  const onToggleShowPassword: MouseEventHandler<HTMLButtonElement> = () => setShowPassword(!showPassword);
+
+  const onMouseDownShowPassword: MouseEventHandler<HTMLButtonElement> = (event) => event.preventDefault();
 
   const onSubmit = async () => {
     setLoading(true);
@@ -77,10 +87,43 @@ const EmailPassword: FunctionComponent<AuthProps> = ({
       label={t(key)}
       name={key}
       autoComplete={autoComplete}
-      value={email}
+      value={value}
+      type={key}
       onChange={onChange}
       autoFocus={autoFocus}
     />
+  );
+
+  const renderPassword = () => (
+    <FormControl
+      fullWidth
+      margin="normal"
+      variant="outlined"
+    >
+      <InputLabel htmlFor="password" required>
+        {t('password')}
+      </InputLabel>
+      <OutlinedInput
+        id="password"
+        type={showPassword ? 'text' : 'password'}
+        required
+        value={password}
+        onChange={(event) => setPassword(event.target.value)}
+        endAdornment={
+          <InputAdornment position="end">
+            <IconButton
+              aria-label="Show Password"
+              onClick={onToggleShowPassword}
+              onMouseDown={onMouseDownShowPassword}
+              edge="end"
+            >
+              {showPassword ? <Visibility /> : <VisibilityOff />}
+            </IconButton>
+          </InputAdornment>
+        }
+        labelWidth={85}
+      />
+    </FormControl>
   );
 
   const renderSubmit = () => (
@@ -146,7 +189,7 @@ const EmailPassword: FunctionComponent<AuthProps> = ({
   const renderForm = () => (
     <form className={classes.form} noValidate>
       {renderTextField("email", "email", email, (event) => setEmail(event.target.value), true)}
-      {renderTextField("password", "current-password", password, (event) => setPassword(event.target.value), false)}
+      {renderPassword()}
       {loading && (
         <CircularProgress />
       )}
