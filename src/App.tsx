@@ -1,3 +1,4 @@
+import { RecoilRoot } from 'recoil';
 import { createTheme, ThemeProvider, responsiveFontSizes } from "@material-ui/core";
 import {
   BrowserRouter as Router,
@@ -8,6 +9,7 @@ import {
 import AuthSignInEmailPassword from "./containers/AuthSignInEmailPassword";
 import AuthSignUpEmailPassword from "./containers/AuthSignUpEmailPassword";
 import AuthResetEmailPassword from "./containers/AuthResetEmailPassword";
+import AuthBasicInfo from "./containers/AuthBasicInfo";
 
 const theme = responsiveFontSizes(createTheme({
   palette: {
@@ -22,21 +24,26 @@ const theme = responsiveFontSizes(createTheme({
 
 const App = () => {
   return (
-    <ThemeProvider theme={theme}>
-      <Router>
-        <Switch>
-          <Route path="/signUp">
-            <AuthSignUpEmailPassword />
-          </Route>
-          <Route path="/forgotPassword">
-            <AuthResetEmailPassword />
-          </Route>
-          <Route path="/">
-            <AuthSignInEmailPassword />
-          </Route>
-        </Switch>
-      </Router>
-    </ThemeProvider>
+    <RecoilRoot>
+      <ThemeProvider theme={theme}>
+        <Router>
+          <Switch>
+            <Route path="/signUp">
+              <AuthSignUpEmailPassword />
+            </Route>
+            <Route path="/forgotPassword">
+              <AuthResetEmailPassword />
+            </Route>
+            <Route path="/basicInfo">
+              <AuthBasicInfo />
+            </Route>
+            <Route path="/">
+              <AuthSignInEmailPassword />
+            </Route>
+          </Switch>
+        </Router>
+      </ThemeProvider>
+    </RecoilRoot>
   );
 }
 

@@ -12,10 +12,22 @@ export enum AuthState {
   SignedOut
 };
 
-export interface AuthDetails {
-  userId: string;
-  displayName: string | null;
+export interface Username {
+  firstName: string | null;
+  lastName: string | null;
+};
+
+export interface UserInfo extends Username {
   email: string | null;
+  emailVerified: boolean;
+  countryCode: string | null;
+  phoneNumber: string | null;
+  phoneNumberVerified: boolean;
+  dob: Date | null;
+};
+
+export interface AuthDetails extends UserInfo {
+  userId: string;
 };
 
 export interface AuthInfo {
