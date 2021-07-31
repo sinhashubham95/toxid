@@ -4,14 +4,15 @@ import Alert from '@material-ui/lab/Alert';
 
 import Images from '../../assets';
 import auth from '../../utils/auth';
-import { AuthExtra, AuthInfo, AuthProps } from '../../types/auth';
+import { AuthExtra, AuthInfo, AuthProps, SignInExtra } from '../../types/auth';
 import { SnackInfo, SnackState } from '../../types/common';
 
 const withAuth = (
   Component: FunctionComponent<AuthProps>,
   title: string,
   method: Function,
-  extras: Array<AuthExtra>
+  extras: Array<AuthExtra>,
+  signInExtras: Array<SignInExtra>,
 ) => () => {
   const classes = useStyles();
 
@@ -43,6 +44,7 @@ const withAuth = (
             title={title}
             method={method}
             extras={extras}
+            signInExtras={signInExtras}
             showSuccessMessage={showSuccessMessage}
             showErrorMessage={showErrorMessage}
           />

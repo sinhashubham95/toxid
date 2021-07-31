@@ -11,7 +11,8 @@ const AuthResetEmailPassword = withAuth(
       title: 'signIn',
       link: '/',
     },
-  ]
+  ],
+  [],
 );
 
 export default AuthResetEmailPassword;

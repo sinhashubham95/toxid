@@ -1,3 +1,5 @@
+import { SvgIconTypeMap } from "@material-ui/core";
+import { OverridableComponent } from "@material-ui/core/OverridableComponent";
 import { CommonProps } from "./common";
 
 export type AuthErrorInfo = {
@@ -27,8 +29,16 @@ export interface AuthExtra {
   link: string;
 };
 
+export interface SignInExtra {
+  title: string;
+  color: { [key: string]: string };
+  icon: OverridableComponent<SvgIconTypeMap<{}, "svg">>;
+  handler: Function;
+};
+
 export interface AuthProps extends CommonProps {
   title: string;
   method: Function;
   extras: Array<AuthExtra>;
+  signInExtras: Array<SignInExtra>;
 };

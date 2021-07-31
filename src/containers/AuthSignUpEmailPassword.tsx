@@ -11,7 +11,8 @@ const AuthSignUpEmailPassword = withAuth(
       title: 'alreadyHaveAccount',
       link: '/',
     },
-  ]
+  ],
+  [],
 );
 
 export default AuthSignUpEmailPassword;

@@ -1,4 +1,4 @@
-import { FunctionComponent } from 'react';
+import { FunctionComponent, ChangeEventHandler } from 'react';
 import { Avatar, Button, Grid, Link, makeStyles, TextField, Typography, CircularProgress } from '@material-ui/core';
 import { LockOutlined } from '@material-ui/icons';
 import { useState } from 'react';
@@ -30,53 +30,81 @@ const ResetEmailPassword: FunctionComponent<AuthProps> = ({
     setLoading(false);
   };
 
+  const renderHeaderIcon = () => (
+    <Avatar className={classes.avatar}>
+      <LockOutlined />
+    </Avatar>
+  );
+
+  const renderHeader = () => (
+    <Typography component="h1" variant="h5">
+      {t(title)}
+    </Typography>
+  );
+
+  const renderTextField = (
+    key: string,
+    autoComplete: string,
+    value: string,
+    onChange: ChangeEventHandler<HTMLTextAreaElement | HTMLInputElement>,
+    autoFocus: boolean,
+  ) => (
+    <TextField
+      variant="outlined"
+      margin="normal"
+      required
+      fullWidth
+      id={key}
+      label={t(key)}
+      name={key}
+      autoComplete={autoComplete}
+      value={email}
+      onChange={onChange}
+      autoFocus={autoFocus}
+    />
+  );
+
+  const renderSubmit = () => (
+    <Button
+      type="submit"
+      fullWidth
+      variant="contained"
+      color="primary"
+      className={classes.submit}
+      onClick={onSubmit}
+    >
+      {t(title)}
+    </Button>
+  );
+
+  const renderExtrasGrid = () => (
+    <Grid container>
+      {extras.map(({ title, link }, index) => (
+        <Grid key={title} item xs={index === 0}>
+          <Link href={link} variant="body2">
+            {t(title)}
+          </Link>
+        </Grid>
+      ))}
+    </Grid>
+  );
+
+  const renderForm = () => (
+    <form className={classes.form} noValidate>
+      {renderTextField("email", "email", email, (event) => setEmail(event.target.value), true)}
+      {loading && (
+        <CircularProgress />
+      )}
+      {!loading && renderSubmit()}
+      {renderExtrasGrid()}
+    </form>
+  );
+
   return (
     <div className={classes.paper}>
-      <Avatar className={classes.avatar}>
-        <LockOutlined />
-      </Avatar>
-      <Typography component="h1" variant="h5">
-        {t(title)}
-      </Typography>
-      <form className={classes.form} noValidate>
-        <TextField
-          variant="outlined"
-          margin="normal"
-          required
-          fullWidth
-          id="email"
-          label={t('email')}
-          name="email"
-          autoComplete="email"
-          value={email}
-          onChange={(event) => setEmail(event.target.value)}
-          autoFocus
-        />
-        {loading && (
-          <CircularProgress />
-        )}
-        {!loading && (
-          <Button
-            type="submit"
-            fullWidth
-            variant="contained"
-            color="primary"
-            className={classes.submit}
-            onClick={onSubmit}
-          >
-            {t(title)}
-          </Button>
-        )}
-        <Grid container>
-          {extras.map(({ title, link }, index) => (
-            <Grid key={title} item xs={index === 0}>
-              <Link href={link} variant="body2">
-                {t(title)}
-              </Link>
-            </Grid>
-          ))}
-        </Grid>
-      </form>
+      {renderHeaderIcon()}
+      {renderHeader()}
+      {renderForm()}
     </div>
   );
 };
