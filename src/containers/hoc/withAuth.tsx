@@ -1,11 +1,15 @@
 import React, { useEffect, FunctionComponent, useState } from 'react';
+import { useHistory } from 'react-router-dom';
+import { useRecoilValue } from 'recoil';
 import { CssBaseline, Grid, makeStyles, Paper, Snackbar } from "@material-ui/core";
 import Alert from '@material-ui/lab/Alert';
 
 import Images from '../../assets';
-import auth from '../../utils/auth';
-import { AuthExtra, AuthInfo, AuthProps, SignInExtra } from '../../types/auth';
+import { AuthExtra, AuthProps, SignInExtra } from '../../types/auth';
 import { SnackInfo, SnackState } from '../../types/common';
+import isSignedInSelector from '../../recoil/selectors/auth/isSignedIn';
+import isMandatoryUserInfoAvailableSelector from '../../recoil/selectors/auth/isMandatoryUserInfoAvailable';
+import { BASIC_INFO } from '../../constants/routes';
 
 const withAuth = (
   Component: FunctionComponent<AuthProps>,
@@ -16,11 +20,21 @@ const withAuth = (
 ) => () => {
   const classes = useStyles();
 
+  const history = useHistory();
+
+  const isSignedIn = useRecoilValue(isSignedInSelector);
+  const isMandatoryUserInfoAvailable = useRecoilValue(isMandatoryUserInfoAvailableSelector);
+
   const [snack, setSnack] = useState<SnackInfo | null>(null);
 
-  useEffect(() => auth.onAuthStateChange(onAuthStateChange));
-
-  const onAuthStateChange = (authInfo: AuthInfo) => { };
+  useEffect(() => {
+    if (isSignedIn) {
+      if (isMandatoryUserInfoAvailable) {
+        //move to the basic info screen
+        history.push(BASIC_INFO);
+      }
+    }
+  }, [isSignedIn, isMandatoryUserInfoAvailable]);
 
   const onCloseSnack = () => setSnack(null);
 

@@ -1,5 +1,5 @@
 import { selector } from 'recoil';
-import authInfo from '../atoms/authInfo';
+import authInfo from '../../atoms/auth/authInfo';
 
 const isSignedIn = selector({
   key: "isSignedIn",

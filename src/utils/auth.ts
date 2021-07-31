@@ -13,18 +13,6 @@ class Auth {
     this.auth.useDeviceLanguage();
   }
 
-  onAuthStateChange = (handler: (info: AuthInfo) => void) => this.auth.onAuthStateChanged((user) => {
-    if (user) {
-      // signed in
-      (async () => handler(await this.getAuthInfoFromUser(user)))();
-    } else {
-      // signed out
-      handler({
-        state: AuthState.SignedOut,
-      });
-    }
-  });
-
   signInWithEmailPassword = async (email: string, password: string): Promise<AuthInfo> => {
     try {
       return await this.getAuthInfoFromUser((await this.auth.signInWithEmailAndPassword(email, password)).user);

@@ -1,7 +1,7 @@
 import { selector } from 'recoil';
-import authInfo from '../atoms/authInfo';
+import authInfo from '../../atoms/auth/authInfo';
 
-const isUserInfoAvailable = selector({
+const isMandatoryUserInfoAvailable = selector({
   key: "isUserInfoAvailable",
   get: ({ get }) => {
     const details = get(authInfo).details;
@@ -20,4 +20,4 @@ const isUserInfoAvailable = selector({
   },
 });
 
-export default isUserInfoAvailable;
+export default isMandatoryUserInfoAvailable;
