@@ -1,7 +1,21 @@
-import { ChangeEventHandler, Fragment, ReactNode, useState } from 'react';
-import { useRecoilState } from 'recoil';
+import { ChangeEventHandler, Fragment, ReactNode, useEffect, useState } from 'react';
+import { useRecoilState, useRecoilValue } from 'recoil';
+import { useHistory } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
-import { Avatar, Button, CircularProgress, Container, CssBaseline, Grid, GridSize, IconButton, makeStyles, Snackbar, TextField, TextFieldProps } from "@material-ui/core";
+import {
+  Avatar,
+  Button,
+  CircularProgress,
+  Container,
+  CssBaseline,
+  Grid,
+  GridSize,
+  IconButton,
+  makeStyles,
+  Snackbar,
+  TextField,
+  TextFieldProps,
+} from "@material-ui/core";
 import AccountCircleIcon from '@material-ui/icons/AccountCircle';
 import { Alert, Autocomplete, AutocompleteRenderInputParams } from '@material-ui/lab';
 import DateFnsUtils from '@date-io/date-fns';
@@ -14,17 +28,28 @@ import { BasicInfo, Country } from '../../types/auth';
 import { SnackInfo, SnackState } from '../../types/common';
 import { PROFILE_PHOTO } from '../../constants/constants';
 import { COUNTRIES } from '../../constants/countries';
+import isMandatoryUserInfoAvailableSelector from '../../recoil/selectors/auth/isMandatoryUserInfoAvailable';
+import { HOME } from '../../constants/routes';
 
 const UserInfo = () => {
   const classes = useStyles();
 
   const { t } = useTranslation();
+  const history = useHistory();
 
-  const [info] = useRecoilState(authInfo);
+  const isMandatoryUserInfoAvailable = useRecoilValue(isMandatoryUserInfoAvailableSelector);
+
+  const [info, setInfo] = useRecoilState(authInfo);
   const [basicInfo, setBasicInfo] = useState<BasicInfo>(auth.getBasicInfo(info.details));
 
   const [loading, setLoading] = useState(false);
   const [snack, setSnack] = useState<SnackInfo | null>(null);
+
+  useEffect(() => {
+    if (isMandatoryUserInfoAvailable) {
+      history.push(HOME);
+    }
+  }, [isMandatoryUserInfoAvailable, history]);
 
   const onFileChange: ChangeEventHandler<HTMLInputElement> = (event) => {
     const { files } = event.target;
@@ -57,9 +82,20 @@ const UserInfo = () => {
     const error = await auth.saveBasicInfo(info.details?.userId, basicInfo);
     if (error) {
       showErrorMessage(error.message);
+    } else if (info.details) {
+      // update in auth info
+      setInfo({
+        ...info,
+        details: {
+          ...info.details,
+          ...basicInfo,
+        },
+      });
     }
     setLoading(false);
   };
+
+  const onSkip = () => history.push(HOME);
 
   const showSuccessMessage = (message: string) => setSnack({
     state: SnackState.Success,
@@ -223,6 +259,24 @@ const UserInfo = () => {
     </Grid>
   );
 
+  const renderSkip = () => (
+    <Grid
+      container
+      justifyContent="center"
+      alignContent="center"
+      alignItems="center"
+    >
+      <Button
+        type="submit"
+        variant="text"
+        color="secondary"
+        onClick={onSkip}
+      >
+        {t("skip")}
+      </Button>
+    </Grid>
+  );
+
   const renderForm = () => (
     <form className={classes.form} noValidate>
       <Grid container spacing={2}>
@@ -234,6 +288,7 @@ const UserInfo = () => {
         {renderDOB()}
         {loading && renderLoading()}
         {!loading && renderSubmit()}
+        {!loading && renderSkip()}
       </Grid>
     </form>
   );

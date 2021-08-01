@@ -89,7 +89,6 @@ class Auth {
   });
 
   saveBasicInfo = async (userId?: string, info?: BasicInfo): Promise<AuthErrorInfo | null> => {
-    console.log('save', userId, info);
     try {
       if (userId && info) {
         // save in the database

@@ -12,9 +12,10 @@ import AuthSignInEmailPassword from "./containers/AuthSignInEmailPassword";
 import AuthSignUpEmailPassword from "./containers/AuthSignUpEmailPassword";
 import AuthResetEmailPassword from "./containers/AuthResetEmailPassword";
 import AuthUserInfo from "./containers/AuthUserInfo";
-import { BASIC_INFO, FORGOT_PASSWORD, SIGN_IN, SIGN_UP } from './constants/routes';
+import { BASIC_INFO, FORGOT_PASSWORD, HOME, SIGN_IN, SIGN_UP } from './constants/routes';
 import { AuthInfo, AuthState } from './types/auth';
 import auth from './utils/auth';
+import Home from './containers/Home';
 
 const theme = responsiveFontSizes(createTheme({
   palette: {
@@ -52,6 +53,9 @@ const App = () => {
             </Route>
             <Route path={BASIC_INFO}>
               <AuthUserInfo />
+            </Route>
+            <Route path={HOME}>
+              <Home />
             </Route>
             <Route path={SIGN_IN}>
               <AuthSignInEmailPassword />

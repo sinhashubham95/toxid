@@ -9,7 +9,7 @@ import { AuthExtra, AuthInfo, AuthProps, SignInExtra } from '../../types/auth';
 import { SnackInfo, SnackState } from '../../types/common';
 import isSignedInSelector from '../../recoil/selectors/auth/isSignedIn';
 import isMandatoryUserInfoAvailableSelector from '../../recoil/selectors/auth/isMandatoryUserInfoAvailable';
-import { BASIC_INFO } from '../../constants/routes';
+import { BASIC_INFO, HOME } from '../../constants/routes';
 import auth from '../../utils/auth';
 import authInfo from '../../recoil/atoms/auth/authInfo';
 
@@ -50,6 +50,8 @@ const withAuth = (
       if (!isMandatoryUserInfoAvailable) {
         //move to the basic info screen
         history.push(BASIC_INFO);
+      } else {
+        history.push(HOME);
       }
     }
   }, [isSignedIn, isMandatoryUserInfoAvailable, history]);

@@ -17,6 +17,7 @@ const ENTranslations = {
   phoneNumber: "Phone Number",
   dob: "Date of Birth",
   save: "Save",
+  skip: "Skip for later",
 };
 
 export default ENTranslations;
