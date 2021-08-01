@@ -88,7 +88,43 @@ class Auth {
     dob: details?.dob ? details.dob : new Date(),
   });
 
-  private getName(displayName: string | null): Username {
+  saveBasicInfo = async (userId?: string, info?: BasicInfo): Promise<AuthErrorInfo | null> => {
+    console.log('save', userId, info);
+    try {
+      if (userId && info) {
+        // save in the database
+        await this.userCollection.doc(userId).set(info);
+        // also update in the authentication information
+        if (this.auth.currentUser?.email !== info.email) {
+          await this.auth.currentUser?.updateEmail(info.email);
+        }
+        const fullName = this.getFullName(info.firstName, info.lastName);
+        if (this.auth.currentUser?.displayName !== fullName ||
+          this.auth.currentUser?.photoURL !== info.photoUrl) {
+          await this.auth.currentUser?.updateProfile({
+            displayName: fullName,
+            photoURL: info.photoUrl,
+          });
+        }
+      }
+      return null;
+    } catch (e) {
+      return {
+        code: e.code,
+        message: e.message,
+      };
+    }
+  };
+
+  countryToFlag = (isoCode: string): string => {
+    return typeof String.fromCodePoint !== 'undefined'
+      ? isoCode
+        .toUpperCase()
+        .replace(/./g, (char) => String.fromCodePoint(char.charCodeAt(0) + 127397))
+      : isoCode;
+  }
+
+  private getUsername(displayName: string | null): Username {
     const result: Username = {
       firstName: null,
       lastName: null,
@@ -106,6 +142,8 @@ class Auth {
     }
     return result;
   }
+
+  private getFullName = (firstName: string, lastName: string): string => `${firstName} ${lastName}`;
 
   private getUserInfo = async (userId: string): Promise<UserInfo | null> => {
     try {
@@ -141,7 +179,7 @@ class Auth {
           userId: user.uid,
           email: user.email,
           emailVerified: user.emailVerified,
-          ...this.getName(user.displayName),
+          ...this.getUsername(user.displayName),
           photoUrl: user.photoURL,
           countryCode: null,
           phoneNumber: null,

@@ -17,6 +17,12 @@ export interface Username {
   lastName: string | null;
 };
 
+export interface Country {
+  code: string;
+  label: string;
+  phone: string;
+};
+
 export interface UserInfo extends Username {
   email: string | null;
   emailVerified: boolean;
