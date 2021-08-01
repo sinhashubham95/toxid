@@ -1,15 +1,17 @@
 import React, { useEffect, FunctionComponent, useState } from 'react';
 import { useHistory } from 'react-router-dom';
-import { useRecoilValue } from 'recoil';
+import { useRecoilState, useRecoilValue } from 'recoil';
 import { CssBaseline, Grid, makeStyles, Paper, Snackbar } from "@material-ui/core";
 import Alert from '@material-ui/lab/Alert';
 
 import Images from '../../assets';
-import { AuthExtra, AuthProps, SignInExtra } from '../../types/auth';
+import { AuthExtra, AuthInfo, AuthProps, SignInExtra } from '../../types/auth';
 import { SnackInfo, SnackState } from '../../types/common';
 import isSignedInSelector from '../../recoil/selectors/auth/isSignedIn';
 import isMandatoryUserInfoAvailableSelector from '../../recoil/selectors/auth/isMandatoryUserInfoAvailable';
 import { BASIC_INFO } from '../../constants/routes';
+import auth from '../../utils/auth';
+import authInfo from '../../recoil/atoms/auth/authInfo';
 
 const withAuth = (
   Component: FunctionComponent<AuthProps>,
@@ -22,19 +24,37 @@ const withAuth = (
 
   const history = useHistory();
 
+  const setAuthInfo = useRecoilState(authInfo)[1];
   const isSignedIn = useRecoilValue(isSignedInSelector);
   const isMandatoryUserInfoAvailable = useRecoilValue(isMandatoryUserInfoAvailableSelector);
 
   const [snack, setSnack] = useState<SnackInfo | null>(null);
 
   useEffect(() => {
+    let unblock = history.block((location) => {
+      // now that the navigation was attempted and was blocked
+      // see if the login has been completed
+      if (isSignedIn) {
+        // because user is signed in, unblock the navigation
+        unblock();
+        // after unblocking
+        history.push(location.pathname);
+      }
+    });
+  }, [history, isSignedIn]);
+
+  useEffect(() => auth.onAuthStateChange(onAuthStateChange));
+
+  useEffect(() => {
     if (isSignedIn) {
-      if (isMandatoryUserInfoAvailable) {
+      if (!isMandatoryUserInfoAvailable) {
         //move to the basic info screen
         history.push(BASIC_INFO);
       }
     }
-  }, [isSignedIn, isMandatoryUserInfoAvailable]);
+  }, [isSignedIn, isMandatoryUserInfoAvailable, history]);
+
+  const onAuthStateChange = (info: AuthInfo) => setAuthInfo(info);
 
   const onCloseSnack = () => setSnack(null);
 

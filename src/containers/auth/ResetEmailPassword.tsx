@@ -64,6 +64,18 @@ const ResetEmailPassword: FunctionComponent<AuthProps> = ({
     />
   );
 
+  const renderLoading = () => (
+    <Grid
+      container
+      justifyContent="center"
+      alignContent="center"
+      alignItems="center"
+      className={classes.loading}
+    >
+      <CircularProgress color="secondary" />
+    </Grid>
+  );
+
   const renderSubmit = () => (
     <Button
       type="submit"
@@ -92,9 +104,7 @@ const ResetEmailPassword: FunctionComponent<AuthProps> = ({
   const renderForm = () => (
     <form className={classes.form} noValidate>
       {renderTextField("email", "email", email, (event) => setEmail(event.target.value), true)}
-      {loading && (
-        <CircularProgress />
-      )}
+      {loading && renderLoading()}
       {!loading && renderSubmit()}
       {renderExtrasGrid()}
     </form>
@@ -123,6 +133,9 @@ const useStyles = makeStyles(theme => ({
   form: {
     width: '100%',
     marginTop: theme.spacing(1),
+  },
+  loading: {
+    margin: theme.spacing(2, 0, 2),
   },
   submit: {
     margin: theme.spacing(3, 0, 2),

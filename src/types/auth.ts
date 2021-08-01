@@ -20,10 +20,23 @@ export interface Username {
 export interface UserInfo extends Username {
   email: string | null;
   emailVerified: boolean;
+  photoUrl: string | null,
   countryCode: string | null;
   phoneNumber: string | null;
   phoneNumberVerified: boolean;
   dob: Date | null;
+};
+
+export interface BasicInfo {
+  email: string;
+  emailVerified: boolean;
+  firstName: string;
+  lastName: string;
+  photoUrl: string,
+  countryCode: string;
+  phoneNumber: string;
+  phoneNumberVerified: boolean;
+  dob: Date;
 };
 
 export interface AuthDetails extends UserInfo {

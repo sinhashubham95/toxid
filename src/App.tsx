@@ -1,16 +1,20 @@
+import { useEffect } from 'react';
 import { RecoilRoot } from 'recoil';
 import { createTheme, ThemeProvider, responsiveFontSizes } from "@material-ui/core";
 import {
   BrowserRouter as Router,
   Switch,
-  Route
+  Route,
+  useHistory,
 } from "react-router-dom";
 
 import AuthSignInEmailPassword from "./containers/AuthSignInEmailPassword";
 import AuthSignUpEmailPassword from "./containers/AuthSignUpEmailPassword";
 import AuthResetEmailPassword from "./containers/AuthResetEmailPassword";
-import AuthBasicInfo from "./containers/AuthBasicInfo";
+import AuthUserInfo from "./containers/AuthUserInfo";
 import { BASIC_INFO, FORGOT_PASSWORD, SIGN_IN, SIGN_UP } from './constants/routes';
+import { AuthInfo, AuthState } from './types/auth';
+import auth from './utils/auth';
 
 const theme = responsiveFontSizes(createTheme({
   palette: {
@@ -24,6 +28,17 @@ const theme = responsiveFontSizes(createTheme({
 }));
 
 const App = () => {
+  const history = useHistory();
+
+  useEffect(() => auth.onAuthStateChange(onAuthStateChange));
+
+  const onAuthStateChange = (info: AuthInfo) => {
+    if (info.state === AuthState.SignedOut) {
+      // move to the first screen to ask the user to sign in
+      history.push(SIGN_IN);
+    }
+  };
+
   return (
     <RecoilRoot>
       <ThemeProvider theme={theme}>
@@ -36,7 +51,7 @@ const App = () => {
               <AuthResetEmailPassword />
             </Route>
             <Route path={BASIC_INFO}>
-              <AuthBasicInfo />
+              <AuthUserInfo />
             </Route>
             <Route path={SIGN_IN}>
               <AuthSignInEmailPassword />

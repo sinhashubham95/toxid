@@ -1,6 +1,14 @@
 import firebase from 'firebase';
 import { parseFullName } from 'parse-full-name';
-import { AuthErrorInfo, AuthInfo, AuthState, UserInfo, Username } from '../types/auth';
+import {
+  AuthDetails,
+  AuthErrorInfo,
+  AuthInfo,
+  AuthState,
+  UserInfo,
+  Username,
+  BasicInfo,
+} from '../types/auth';
 
 class Auth {
   private readonly auth = firebase.auth();
@@ -11,7 +19,18 @@ class Auth {
 
   constructor() {
     this.auth.useDeviceLanguage();
+    this.auth.setPersistence(firebase.auth.Auth.Persistence.LOCAL);
   }
+
+  onAuthStateChange = (handler: (authInfo: AuthInfo) => void) => this.auth.onAuthStateChanged((user) => {
+    if (user) {
+      (async () => handler(await this.getAuthInfoFromUser(user)))();
+    } else {
+      handler({
+        state: AuthState.SignedOut,
+      });
+    }
+  });
 
   signInWithEmailPassword = async (email: string, password: string): Promise<AuthInfo> => {
     try {
@@ -57,6 +76,18 @@ class Auth {
     }
   };
 
+  getBasicInfo = (details?: AuthDetails): BasicInfo => ({
+    email: details?.email ? details.email : '',
+    emailVerified: details?.emailVerified ? details.emailVerified : false,
+    firstName: details?.firstName ? details.firstName : '',
+    lastName: details?.lastName ? details.lastName : '',
+    photoUrl: details?.photoUrl ? details.photoUrl : '',
+    countryCode: details?.countryCode ? details.countryCode : '',
+    phoneNumber: details?.phoneNumber ? details.phoneNumber : '',
+    phoneNumberVerified: details?.phoneNumberVerified ? details.phoneNumberVerified : false,
+    dob: details?.dob ? details.dob : new Date(),
+  });
+
   private getName(displayName: string | null): Username {
     const result: Username = {
       firstName: null,
@@ -87,6 +118,7 @@ class Auth {
             emailVerified: data.emailVerified,
             firstName: data.firstName,
             lastName: data.lastName,
+            photoUrl: data.photoUrl,
             countryCode: data.countryCode,
             phoneNumber: data.phoneNumber,
             phoneNumberVerified: data.phoneNumberVerified,
@@ -110,6 +142,7 @@ class Auth {
           email: user.email,
           emailVerified: user.emailVerified,
           ...this.getName(user.displayName),
+          photoUrl: user.photoURL,
           countryCode: null,
           phoneNumber: null,
           phoneNumberVerified: false,
