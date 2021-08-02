@@ -44,6 +44,7 @@ import { SnackInfo, SnackState } from './types/common';
 import auth from './utils/auth';
 import { DRAWER_WIDTH } from './constants/constants';
 import authInfo from './recoil/atoms/auth/authInfo';
+import ProfilePhoto from './components/ProfilePhoto';
 
 const theme = responsiveFontSizes(createTheme({
   palette: {
@@ -63,7 +64,7 @@ const App = () => {
   const history = useHistory();
   const location = useLocation();
 
-  const setAuthInfo = useRecoilState(authInfo)[1];
+  const [info, setInfo] = useRecoilState(authInfo);
 
   const [showAppBarAndDrawer, setShowAppBarAndDrawer] = useState(false);
   const [drawerOpen, setDrawerOpen] = useState(false);
@@ -71,7 +72,7 @@ const App = () => {
   const [snack, setSnack] = useState<SnackInfo | null>(null);
 
   const onAuthStateChange = (info: AuthInfo) => {
-    setAuthInfo(info);
+    setInfo(info);
     if (info.state === AuthState.SignedOut) {
       // move to the first screen to ask the user to sign in
       history.replace(SIGN_IN);
@@ -158,6 +159,17 @@ const App = () => {
     </List>
   );
 
+  const renderInfo = () => (
+    <div className={classes.info}>
+      <ProfilePhoto
+        photoUrl={info.details?.photoUrl}
+        avatarStyle={classes.avatar}
+        onClick={() => history.replace(BASIC_INFO)}
+      />
+      <Typography className={classes.name}>{info.details?.firstName}</Typography>
+    </div>
+  );
+
   const renderDrawer = () => (
     <Drawer
       className={classes.drawer}
@@ -169,6 +181,7 @@ const App = () => {
       }}
     >
       <div className={classes.drawerHeader}>
+        {renderInfo()}
         <IconButton onClick={onDrawerClose}>
           {theme.direction === 'ltr' ? <ChevronLeftIcon /> : <ChevronRightIcon />}
         </IconButton>
@@ -262,10 +275,24 @@ const useStyles = makeStyles((theme) => ({
   drawerHeader: {
     display: 'flex',
     alignItems: 'center',
-    padding: theme.spacing(0, 1),
     // necessary for content to be below app bar
     ...theme.mixins.toolbar,
-    justifyContent: 'flex-end',
+    justifyContent: 'space-between',
+    paddingRight: theme.spacing(1),
+  },
+  info: {
+    justifyContent: "center",
+    display: 'flex',
+    flexDirection: "row",
+    alignItems: 'center',
+  },
+  avatar: {
+    width: theme.spacing(4),
+    height: theme.spacing(4),
+    margin: theme.spacing(0),
+  },
+  name: {
+    marginLeft: theme.spacing(2),
   },
   content: {
     flexGrow: 1,

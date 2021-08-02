@@ -10,7 +10,7 @@ const isMandatoryUserInfoAvailable = selector({
       details.email &&
       details.firstName &&
       details.lastName &&
-      details.countryCode &&
+      details.country &&
       details.phoneNumber &&
       details.dob
     ) {

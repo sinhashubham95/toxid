@@ -1,25 +1,23 @@
-import { ChangeEventHandler, Fragment, ReactNode, useEffect, useState } from 'react';
+import { ChangeEvent, ChangeEventHandler, Fragment, ReactNode, useEffect, useState } from 'react';
 import { useRecoilState, useRecoilValue } from 'recoil';
 import { useHistory } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import {
-  Avatar,
   Button,
   CircularProgress,
   Container,
   CssBaseline,
   Grid,
   GridSize,
-  IconButton,
   makeStyles,
   TextField,
   TextFieldProps,
 } from "@material-ui/core";
-import AccountCircleIcon from '@material-ui/icons/AccountCircle';
 import { Autocomplete, AutocompleteRenderInputParams } from '@material-ui/lab';
 import DateFnsUtils from '@date-io/date-fns';
 import { MuiPickersUtilsProvider, KeyboardDatePicker } from '@material-ui/pickers';
 
+import ProfilePhoto from '../../components/ProfilePhoto';
 import authInfo from "../../recoil/atoms/auth/authInfo";
 import auth from '../../utils/auth';
 import storage from '../../utils/storage';
@@ -44,19 +42,14 @@ const UserInfo = ({ showSuccessMessage, showErrorMessage }: CommonProps) => {
   const [loading, setLoading] = useState(false);
 
   useEffect(() => {
-    if (isMandatoryUserInfoAvailable) {
+    if (isMandatoryUserInfoAvailable && history.length === 1) {
       history.replace(HOME);
     }
   }, [isMandatoryUserInfoAvailable, history]);
 
-  const onFileChange: ChangeEventHandler<HTMLInputElement> = (event) => {
-    const { files } = event.target;
-    if (files && files.length > 0) {
-      // use the first selected file
-      const file = files[0];
-      // try to upload this file
-      uploadFile(file);
-    }
+  const onFileChange = (file: File) => {
+    // try to upload this file
+    uploadFile(file);
   };
 
   const onChange = (key: string): ChangeEventHandler<HTMLTextAreaElement | HTMLInputElement> => (event) => setBasicInfo({
@@ -83,7 +76,7 @@ const UserInfo = ({ showSuccessMessage, showErrorMessage }: CommonProps) => {
       setInfo({
         ...info,
         details: {
-          ...info.details,
+          userId: info.details.userId,
           ...basicInfo,
         },
       });
@@ -110,25 +103,11 @@ const UserInfo = ({ showSuccessMessage, showErrorMessage }: CommonProps) => {
   };
 
   const renderAvatar = () => (
-    <div>
-      <input
-        accept="image/*"
-        id="profile-photo"
-        type="file"
-        onChange={onFileChange}
-        className={classes.avatarInput}
-      />
-      <label htmlFor="profile-photo">
-        <IconButton aria-label="Upload profile photo" component="span">
-          <Avatar
-            className={classes.avatar}
-            src={basicInfo.photoUrl}
-          >
-            <AccountCircleIcon fontSize="large" />
-          </Avatar>
-        </IconButton>
-      </label>
-    </div>
+    <ProfilePhoto
+      onFileChange={onFileChange}
+      photoUrl={basicInfo.photoUrl}
+      avatarStyle={classes.avatar}
+    />
   );
 
   const renderTextField = (xs?: boolean | GridSize, sm?: boolean | GridSize) => (
@@ -159,6 +138,8 @@ const UserInfo = ({ showSuccessMessage, showErrorMessage }: CommonProps) => {
     getOptionLabel: (option: unknown) => string,
     renderOption: (option: unknown) => ReactNode,
     renderInput: (params: AutocompleteRenderInputParams) => ReactNode,
+    value: T | null,
+    onChange: (event: ChangeEvent<{}>, newValue: T | null) => void,
   ) => (
     <Grid item xs={xs} sm={sm}>
       <Autocomplete
@@ -168,13 +149,15 @@ const UserInfo = ({ showSuccessMessage, showErrorMessage }: CommonProps) => {
         getOptionLabel={getOptionLabel}
         renderOption={renderOption}
         renderInput={renderInput}
+        value={value}
+        onChange={onChange}
       />
     </Grid>
   );
 
   const renderCountryCode = () => renderSelect(12, 5)<Country>(
     "countryCode",
-    COUNTRIES,
+    Object.values(COUNTRIES),
     (option: unknown) => (option as Country).label,
     (option: unknown) => (
       <Fragment>
@@ -192,9 +175,11 @@ const UserInfo = ({ showSuccessMessage, showErrorMessage }: CommonProps) => {
           ...params.inputProps,
           autoComplete: 'countryCode',
         }}
-        onChange={onChange("countryCode")}
       />
-    )
+    ),
+    basicInfo.country,
+    (_event: any, newValue: Country | null) =>
+      newValue && setBasicInfo({ ...basicInfo, country: newValue }),
   );
 
   const renderDOB = () => (
@@ -258,7 +243,7 @@ const UserInfo = ({ showSuccessMessage, showErrorMessage }: CommonProps) => {
         color="secondary"
         onClick={onSkip}
       >
-        {t("skip")}
+        {history.length === 1 ? t("skip") : t("done")}
       </Button>
     </Grid>
   );
@@ -303,8 +288,6 @@ const useStyles = makeStyles((theme) => ({
   avatar: {
     width: theme.spacing(8),
     height: theme.spacing(8),
-    margin: theme.spacing(1),
-    backgroundColor: theme.palette.secondary.main,
   },
   form: {
     width: '100%',

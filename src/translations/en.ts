@@ -20,6 +20,8 @@ const ENTranslations = {
   dob: "Date of Birth",
   save: "Save",
   skip: "Skip for later",
+  home: "Home",
+  done: "Done",
 };
 
 export default ENTranslations;
