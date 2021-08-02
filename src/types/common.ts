@@ -29,3 +29,7 @@ export interface ProfilePhotoProps {
   photoUrl: string | null | undefined;
   avatarStyle?: ClassValue;
 };
+
+export interface APIError {
+  message: string;
+};
