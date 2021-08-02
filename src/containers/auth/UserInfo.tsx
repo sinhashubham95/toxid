@@ -12,12 +12,11 @@ import {
   GridSize,
   IconButton,
   makeStyles,
-  Snackbar,
   TextField,
   TextFieldProps,
 } from "@material-ui/core";
 import AccountCircleIcon from '@material-ui/icons/AccountCircle';
-import { Alert, Autocomplete, AutocompleteRenderInputParams } from '@material-ui/lab';
+import { Autocomplete, AutocompleteRenderInputParams } from '@material-ui/lab';
 import DateFnsUtils from '@date-io/date-fns';
 import { MuiPickersUtilsProvider, KeyboardDatePicker } from '@material-ui/pickers';
 
@@ -25,13 +24,13 @@ import authInfo from "../../recoil/atoms/auth/authInfo";
 import auth from '../../utils/auth';
 import storage from '../../utils/storage';
 import { BasicInfo, Country } from '../../types/auth';
-import { SnackInfo, SnackState } from '../../types/common';
+import { CommonProps } from '../../types/common';
 import { PROFILE_PHOTO } from '../../constants/constants';
 import { COUNTRIES } from '../../constants/countries';
 import isMandatoryUserInfoAvailableSelector from '../../recoil/selectors/auth/isMandatoryUserInfoAvailable';
 import { HOME } from '../../constants/routes';
 
-const UserInfo = () => {
+const UserInfo = ({ showSuccessMessage, showErrorMessage }: CommonProps) => {
   const classes = useStyles();
 
   const { t } = useTranslation();
@@ -43,11 +42,10 @@ const UserInfo = () => {
   const [basicInfo, setBasicInfo] = useState<BasicInfo>(auth.getBasicInfo(info.details));
 
   const [loading, setLoading] = useState(false);
-  const [snack, setSnack] = useState<SnackInfo | null>(null);
 
   useEffect(() => {
     if (isMandatoryUserInfoAvailable) {
-      history.push(HOME);
+      history.replace(HOME);
     }
   }, [isMandatoryUserInfoAvailable, history]);
 
@@ -75,8 +73,6 @@ const UserInfo = () => {
     }
   };
 
-  const onCloseSnack = () => setSnack(null);
-
   const onSubmit = async () => {
     setLoading(true);
     const error = await auth.saveBasicInfo(info.details?.userId, basicInfo);
@@ -95,17 +91,7 @@ const UserInfo = () => {
     setLoading(false);
   };
 
-  const onSkip = () => history.push(HOME);
-
-  const showSuccessMessage = (message: string) => setSnack({
-    state: SnackState.Success,
-    message,
-  });
-
-  const showErrorMessage = (message: string) => setSnack({
-    state: SnackState.Error,
-    message,
-  });
+  const onSkip = () => history.replace(HOME);
 
   const uploadFile = async (file: File) => {
     const result = await storage.uploadFile(PROFILE_PHOTO, file);
@@ -293,14 +279,6 @@ const UserInfo = () => {
     </form>
   );
 
-  const renderSnackbar = () => (
-    <Snackbar open={!!snack} autoHideDuration={6000} onClose={onCloseSnack}>
-      <Alert elevation={6} variant="filled" severity={snack?.state} onClose={onCloseSnack}>
-        {snack?.message}
-      </Alert>
-    </Snackbar>
-  );
-
   return (
     <Container component="main" maxWidth="xs">
       <CssBaseline />
@@ -308,7 +286,6 @@ const UserInfo = () => {
         {renderAvatar()}
         {renderForm()}
       </div>
-      {renderSnackbar()}
     </Container>
   );
 };
