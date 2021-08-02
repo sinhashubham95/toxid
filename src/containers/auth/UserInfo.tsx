@@ -1,6 +1,13 @@
-import { ChangeEvent, ChangeEventHandler, Fragment, ReactNode, useEffect, useState } from 'react';
+import {
+  ChangeEvent,
+  ChangeEventHandler,
+  Fragment,
+  ReactNode,
+  useEffect,
+  useState,
+} from 'react';
 import { useRecoilState, useRecoilValue } from 'recoil';
-import { useHistory } from 'react-router-dom';
+import { useHistory, useParams } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import {
   Button,
@@ -28,8 +35,10 @@ import { COUNTRIES } from '../../constants/countries';
 import isMandatoryUserInfoAvailableSelector from '../../recoil/selectors/auth/isMandatoryUserInfoAvailable';
 import { HOME } from '../../constants/routes';
 
-const UserInfo = ({ showSuccessMessage, showErrorMessage }: CommonProps) => {
+const UserInfo = ({ showErrorMessage }: CommonProps) => {
   const classes = useStyles();
+
+  const { init } = useParams<{ init: string }>();
 
   const { t } = useTranslation();
   const history = useHistory();
@@ -42,10 +51,10 @@ const UserInfo = ({ showSuccessMessage, showErrorMessage }: CommonProps) => {
   const [loading, setLoading] = useState(false);
 
   useEffect(() => {
-    if (isMandatoryUserInfoAvailable && history.length === 1) {
+    if (isMandatoryUserInfoAvailable && JSON.parse(init)) {
       history.replace(HOME);
     }
-  }, [isMandatoryUserInfoAvailable, history]);
+  }, [isMandatoryUserInfoAvailable, init, history]);
 
   const onFileChange = (file: File) => {
     // try to upload this file
@@ -98,7 +107,6 @@ const UserInfo = ({ showSuccessMessage, showErrorMessage }: CommonProps) => {
         ...basicInfo,
         photoUrl: result.downloadUrl,
       });
-      showSuccessMessage(t('profilePhotoUpload'));
     }
   };
 

@@ -164,7 +164,7 @@ const App = () => {
       <ProfilePhoto
         photoUrl={info.details?.photoUrl}
         avatarStyle={classes.avatar}
-        onClick={() => history.replace(BASIC_INFO)}
+        onClick={() => history.replace(`${BASIC_INFO}/false`)}
       />
       <Typography className={classes.name}>{info.details?.firstName}</Typography>
     </div>
@@ -211,7 +211,7 @@ const App = () => {
         <Route path={SIGN_IN} exact component={getWrappedComponent(AuthSignInEmailPassword)} />
         <Route path={SIGN_UP} component={getWrappedComponent(AuthSignUpEmailPassword)} />
         <Route path={FORGOT_PASSWORD} component={getWrappedComponent(AuthResetEmailPassword)} />
-        <Route path={BASIC_INFO} component={getWrappedComponent(AuthUserInfo)} />
+        <Route path={`${BASIC_INFO}/:init`} component={getWrappedComponent(AuthUserInfo)} />
         <Route path={HOME} component={getWrappedComponent(ContentHome)} />
       </Switch>
     </main>

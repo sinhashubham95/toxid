@@ -1,4 +1,5 @@
 import { FunctionComponent, MouseEventHandler } from 'react';
+import { useHistory } from 'react-router-dom';
 import {
   Avatar,
   Button,
@@ -32,6 +33,7 @@ const EmailPassword: FunctionComponent<AuthProps> = ({
 }) => {
   const classes = useStyles();
 
+  const history = useHistory();
   const { t } = useTranslation();
 
   const [loading, setLoading] = useState(false);
@@ -155,7 +157,11 @@ const EmailPassword: FunctionComponent<AuthProps> = ({
     <Grid container>
       {extras.map(({ title, link }, index) => (
         <Grid key={title} item xs={index === 0}>
-          <Link href={link} variant="body2">
+          <Link
+            variant="body2"
+            onClick={() => history.replace(link)}
+            className={classes.extraLink}
+          >
             {t(title)}
           </Link>
         </Grid>
@@ -241,6 +247,11 @@ const useStyles = makeStyles(theme => ({
   },
   signInExtras: {
     margin: theme.spacing(4, 0, 0),
+  },
+  extraLink: {
+    '&:hover': {
+      cursor: 'pointer',
+    },
   },
   extraButton: {
     margin: theme.spacing(1),
