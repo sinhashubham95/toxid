@@ -32,6 +32,18 @@ class Auth {
     }
   });
 
+  signOut = async (): Promise<AuthErrorInfo | null> => {
+    try {
+      await this.auth.signOut();
+      return null;
+    } catch (e) {
+      return {
+        code: e.code,
+        message: e.message,
+      };
+    }
+  };
+
   signInWithEmailPassword = async (email: string, password: string): Promise<AuthInfo> => {
     try {
       return await this.getAuthInfoFromUser((await this.auth.signInWithEmailAndPassword(email, password)).user);

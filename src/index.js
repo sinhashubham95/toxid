@@ -1,5 +1,7 @@
 import React from 'react';
+import { RecoilRoot } from 'recoil';
 import ReactDOM from 'react-dom';
+import {BrowserRouter as Router} from 'react-router-dom';
 
 import './utils/firebase';
 import './utils/i18n';
@@ -9,7 +11,11 @@ import reportWebVitals from './reportWebVitals';
 
 ReactDOM.render(
   <React.StrictMode>
-    <App />
+    <Router>
+      <RecoilRoot>
+        <App />
+      </RecoilRoot>
+    </Router>
   </React.StrictMode>,
   document.getElementById('root')
 );

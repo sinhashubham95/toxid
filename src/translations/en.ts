@@ -1,6 +1,8 @@
 const ENTranslations = {
+  title: "Toxid",
   signIn: "Sign In",
   signUp: "Sign Up",
+  signOut: "Sign Out",
   resetPassword: "Reset Password",
   email: "Email Address",
   password: "Password",
