@@ -1,5 +1,6 @@
 import firebase from 'firebase';
 import { parseFullName } from 'parse-full-name';
+import { COUNTRIES } from '../constants/countries';
 import {
   AuthDetails,
   AuthErrorInfo,
@@ -94,7 +95,7 @@ class Auth {
     firstName: details?.firstName ? details.firstName : '',
     lastName: details?.lastName ? details.lastName : '',
     photoUrl: details?.photoUrl ? details.photoUrl : '',
-    countryCode: details?.countryCode ? details.countryCode : '',
+    country: details?.country ? details.country : COUNTRIES[0],
     phoneNumber: details?.phoneNumber ? details.phoneNumber : '',
     phoneNumberVerified: details?.phoneNumberVerified ? details.phoneNumberVerified : false,
     dob: details?.dob ? details.dob : new Date(),
@@ -104,7 +105,11 @@ class Auth {
     try {
       if (userId && info) {
         // save in the database
-        await this.userCollection.doc(userId).set(info);
+        await this.userCollection.doc(userId).set({
+          ...info,
+          dob: info.dob.getTime(),
+          countryCode: info.country.code,
+        });
         // also update in the authentication information
         if (this.auth.currentUser?.email !== info.email) {
           await this.auth.currentUser?.updateEmail(info.email);
@@ -168,10 +173,10 @@ class Auth {
             firstName: data.firstName,
             lastName: data.lastName,
             photoUrl: data.photoUrl,
-            countryCode: data.countryCode,
+            country: COUNTRIES[data.countryCode],
             phoneNumber: data.phoneNumber,
             phoneNumberVerified: data.phoneNumberVerified,
-            dob: data.dob,
+            dob: data.dob ? new Date(data.dob) : new Date(),
           };
         }
       }
@@ -192,7 +197,7 @@ class Auth {
           emailVerified: user.emailVerified,
           ...this.getUsername(user.displayName),
           photoUrl: user.photoURL,
-          countryCode: null,
+          country: null,
           phoneNumber: null,
           phoneNumberVerified: false,
           dob: null,

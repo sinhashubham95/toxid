@@ -24,24 +24,11 @@ const withAuth = (
   const isSignedIn = useRecoilValue(isSignedInSelector);
   const isMandatoryUserInfoAvailable = useRecoilValue(isMandatoryUserInfoAvailableSelector);
 
-  // useEffect(() => {
-  //   let unblock = history.block((location) => {
-  //     // now that the navigation was attempted and was blocked
-  //     // see if the login has been completed
-  //     if (isSignedIn) {
-  //       // because user is signed in, unblock the navigation
-  //       unblock();
-  //       // after unblocking
-  //       history.push(location.pathname);
-  //     }
-  //   });
-  // }, [history, isSignedIn]);
-
   useEffect(() => {
     if (isSignedIn) {
       if (!isMandatoryUserInfoAvailable) {
         //move to the basic info screen
-        history.replace(BASIC_INFO);
+        history.replace(`${BASIC_INFO}/true`);
       } else {
         history.replace(HOME);
       }

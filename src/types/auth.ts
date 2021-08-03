@@ -27,7 +27,7 @@ export interface UserInfo extends Username {
   email: string | null;
   emailVerified: boolean;
   photoUrl: string | null,
-  countryCode: string | null;
+  country: Country | null;
   phoneNumber: string | null;
   phoneNumberVerified: boolean;
   dob: Date | null;
@@ -39,7 +39,7 @@ export interface BasicInfo {
   firstName: string;
   lastName: string;
   photoUrl: string,
-  countryCode: string;
+  country: Country;
   phoneNumber: string;
   phoneNumberVerified: boolean;
   dob: Date;

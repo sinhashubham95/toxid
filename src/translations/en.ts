@@ -12,7 +12,6 @@ const ENTranslations = {
   successReset: "Email sent successfully. Please follow the instructions there to reset your password.",
   signInGoogle: "Sign in with Google",
   signInFacebook: "Sign in with Facebook",
-  profilePhotoUpload: "Profile photo has been uploaded successfully.",
   firstName: "First Name",
   lastName: "Last Name",
   countryCode: "Code",
@@ -20,6 +19,8 @@ const ENTranslations = {
   dob: "Date of Birth",
   save: "Save",
   skip: "Skip for later",
+  home: "Home",
+  done: "Done",
 };
 
 export default ENTranslations;
