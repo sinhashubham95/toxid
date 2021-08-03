@@ -1,4 +1,4 @@
-import { APIError } from "./common";
+import { APIError, PageInfo } from "./common";
 
 export interface Movie {
   id: number;
@@ -9,12 +9,8 @@ export interface Movie {
   rating: number;
 };
 
-export interface Movies {
-  pageNumber: number;
-  totalPages: number;
-  total: number;
+export interface Movies extends PageInfo {
   data: Array<Movie>;
-  error?: APIError;
 };
 
 export interface MoviesResponse {

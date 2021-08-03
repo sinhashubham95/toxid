@@ -2,7 +2,6 @@ import Axios from "axios";
 import Env from "./env";
 import { Movies as MoviesType, MoviesResponse } from "../types/movies";
 import { GET_ALL_MOVIES_PATH } from "../constants/api";
-import { APIError } from "../types/common";
 
 class Movies {
   private readonly axios = Axios.create({
@@ -14,9 +13,9 @@ class Movies {
     },
   });
 
-  getPopularMovies = async (pageNumber: number): Promise<MoviesType> => {
+  getPopularMovies = async (pageNumber?: number): Promise<MoviesType> => {
     try {
-      const { status, data } = await this.axios.get(GET_ALL_MOVIES_PATH);
+      const { status, data } = await this.axios.get(`${GET_ALL_MOVIES_PATH}&page=${pageNumber}`);
       if (status === 200) {
         const movies = data as MoviesResponse;
         return {
