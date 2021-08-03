@@ -1,13 +1,28 @@
 import { useEffect, useState } from "react";
-import { Card, CardActionArea, CardContent, CardMedia, Grid, makeStyles, Typography } from "@material-ui/core";
-import { Movies } from "../../types/movies";
+import {
+  Card,
+  CardActionArea,
+  CardContent,
+  CardMedia,
+  List,
+  makeStyles,
+  Typography,
+} from "@material-ui/core";
+import { Movie, Movies } from "../../types/movies";
+import { Genre } from "../../types/genres";
 
 const Home = ({
+  param: genre,
   pageNumber,
   fetcher,
+  showErrorMessage,
 }: {
+  param: Genre,
   pageNumber: number,
-  fetcher: (pageNumber?: number) => Promise<Movies>,
+  totalPages: number,
+  total: number,
+  fetcher: (genre: Genre, pageNumber?: number) => Promise<Movies>,
+  showErrorMessage: (message: string) => void,
 }) => {
   const classes = useStyles();
 
@@ -15,52 +30,62 @@ const Home = ({
 
   useEffect(() => {
     (async () => {
-      const result = await fetcher(pageNumber);
+      const result = await fetcher(genre, pageNumber);
       if (result.error) {
         // error occurred
+        showErrorMessage(result.error.message);
       } else {
         setData(result);
       }
     })();
-  }, [pageNumber, fetcher]);
+    // eslint-disable-next-line
+  }, [pageNumber]);
+
+  const renderListItem = (item: Movie) => (
+    <Card className={classes.card}>
+      <CardActionArea>
+        <CardMedia
+          image={item.imageUrl}
+          title={item.title}
+          className={classes.media}
+        />
+        <CardContent>
+          <Typography gutterBottom variant="h5" component="h2">
+            {item.title}
+          </Typography>
+        </CardContent>
+      </CardActionArea>
+    </Card>
+  );
 
   return (
-    <Grid container spacing={2} className={classes.root}>
-      {data && data.data.map(({ id, imageUrl, title }) => (
-        <Grid item key={id} xs={12} sm={3}>
-          <Card className={classes.card}>
-            <CardActionArea>
-              <CardMedia
-                image={imageUrl}
-                title={title}
-                className={classes.media}
-              />
-              <CardContent>
-                <Typography gutterBottom variant="h5" component="h2">
-                  {title}
-                </Typography>
-              </CardContent>
-            </CardActionArea>
-          </Card>
-        </Grid>
-      ))}
-    </Grid>
+    <div className={classes.root}>
+      <Typography component="h2" variant="h5" className={classes.title}>{genre.title}</Typography>
+      <List style={{ display: "flex", flexDirection: "row", padding: 1 }}>
+        {data?.data.map((value: Movie) => renderListItem(value))}
+      </List>
+    </div>
   );
 };
 
 const useStyles = makeStyles((theme) => ({
   root: {
-    flexGrow: 1,
+    display: 'flex',
+    flexDirection: 'column',
+    justifyContent: 'flex-start',
     width: '100%',
-    margin: 0,
-    padding: 0,
+  },
+  title: {
+    margin: theme.spacing(0, 0, 2)
   },
   card: {
-    maxWidth: 400,
-    maxHeight: 600,
+    margin: theme.spacing(0, 2, 0),
+    minWidth: theme.spacing(50),
+    minHeight: theme.spacing(40),
   },
   media: {
-    height: 300,
+    height: theme.spacing(30),
+    objectFit: 'contain',
   },
 }));
 

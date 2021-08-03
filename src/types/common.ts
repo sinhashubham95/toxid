@@ -30,11 +30,18 @@ export interface ProfilePhotoProps {
   avatarStyle?: ClassValue;
 };
 
-export interface PageInfo {
+export interface PageInfo extends ErrorResponse {
   pageNumber: number;
   totalPages: number;
   total: number;
+};
+
+export interface ErrorResponse {
   error?: APIError;
+};
+
+export interface ListInfo<T> extends ErrorResponse {
+  data: Array<T>;
 };
 
 export interface APIError {
