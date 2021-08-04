@@ -42,21 +42,23 @@ const withPagination = <S, T extends PageInfo,>(
 
     const renderLeftButton = () => (
       <IconButton
-        size="small"
+        size="medium"
         disabled={pageNumber <= 1}
         onClick={() => setPageNumber(pageNumber - 1)}
+        className={classes.button}
       >
-        <ChevronLeft />
+        <ChevronLeft fontSize="large" />
       </IconButton>
     );
 
     const renderRightButton = () => (
       <IconButton
-        size="small"
+        size="medium"
         disabled={!!firstData && pageNumber >= firstData.totalPages}
         onClick={() => setPageNumber(pageNumber + 1)}
+        className={classes.button}
       >
-        <ChevronRight />
+        <ChevronRight fontSize="large" />
       </IconButton>
     );
 
@@ -93,6 +95,9 @@ const useStyles = makeStyles((theme) => ({
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
+  },
+  button: {
+    margin: theme.spacing(0, 1, 0),
   },
   list: {
     display: 'flex',

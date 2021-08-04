@@ -9,27 +9,16 @@ import {
   makeStyles,
   AppBar,
   Toolbar,
-  IconButton,
   CssBaseline,
-  Typography,
-  Drawer,
-  Divider,
-  List,
-  ListItem,
-  ListItemIcon,
-  ListItemText,
   Button,
   Snackbar,
+  Typography,
 } from "@material-ui/core";
 import { Alert } from '@material-ui/lab';
-import MenuIcon from '@material-ui/icons/Menu';
-import ChevronLeftIcon from '@material-ui/icons/ChevronLeft';
-import ChevronRightIcon from '@material-ui/icons/ChevronRight';
 import {
   Switch,
   Route,
   useHistory,
-  Link,
   useLocation,
 } from "react-router-dom";
 
@@ -38,13 +27,12 @@ import AuthSignUpEmailPassword from "./containers/AuthSignUpEmailPassword";
 import AuthResetEmailPassword from "./containers/AuthResetEmailPassword";
 import AuthUserInfo from "./containers/AuthUserInfo";
 import ContentHome from "./containers/ContentHome";
-import { BASIC_INFO, CONTENT, CONTENT_ROUTES, FORGOT_PASSWORD, HOME, SIGN_IN, SIGN_UP } from './constants/routes';
+import { BASIC_INFO, CONTENT, FORGOT_PASSWORD, HOME, SIGN_IN, SIGN_UP } from './constants/routes';
 import { AuthInfo, AuthState } from './types/auth';
 import { SnackInfo, SnackState } from './types/common';
 import auth from './utils/auth';
 import { DRAWER_WIDTH } from './constants/constants';
 import authInfo from './recoil/atoms/auth/authInfo';
-import ProfilePhoto from './components/ProfilePhoto';
 
 const theme = responsiveFontSizes(createTheme({
   palette: {
@@ -64,10 +52,9 @@ const App = () => {
   const history = useHistory();
   const location = useLocation();
 
-  const [info, setInfo] = useRecoilState(authInfo);
+  const setInfo = useRecoilState(authInfo)[1];
 
-  const [showAppBarAndDrawer, setShowAppBarAndDrawer] = useState(false);
-  const [drawerOpen, setDrawerOpen] = useState(false);
+  const [showAppBar, setShowAppBar] = useState(false);
 
   const [snack, setSnack] = useState<SnackInfo | null>(null);
 
@@ -83,12 +70,12 @@ const App = () => {
   useEffect(() => auth.onAuthStateChange(onAuthStateChange), []);
 
   useEffect(() => {
-    if (location.pathname.startsWith(CONTENT) && !showAppBarAndDrawer) {
-      setShowAppBarAndDrawer(true);
-    } else if (!location.pathname.startsWith(CONTENT) && showAppBarAndDrawer) {
-      setShowAppBarAndDrawer(false);
+    if (location.pathname.startsWith(CONTENT) && !showAppBar) {
+      setShowAppBar(true);
+    } else if (!location.pathname.startsWith(CONTENT) && showAppBar) {
+      setShowAppBar(false);
     }
-  }, [location, showAppBarAndDrawer]);
+  }, [location, showAppBar]);
 
   const onSignOut = async () => {
     const error = await auth.signOut();
@@ -97,10 +84,6 @@ const App = () => {
       showErrorMessage(error.message);
     }
   };
-
-  const onDrawerOpen = () => setDrawerOpen(true);
-
-  const onDrawerClose = () => setDrawerOpen(false);
 
   const onCloseSnack = () => setSnack(null);
 
@@ -117,78 +100,16 @@ const App = () => {
   const renderAppBar = () => (
     <Fragment>
       <CssBaseline />
-      <AppBar
-        position="fixed"
-        className={clsx(classes.appBar, { [classes.appBarShift]: drawerOpen })}
-      >
-        <Toolbar>
-          <IconButton
-            color="inherit"
-            aria-label="open drawer"
-            onClick={onDrawerOpen}
-            edge="start"
-            className={clsx(classes.menuButton, drawerOpen && classes.hide)}
-          >
-            <MenuIcon />
-          </IconButton>
-          <Typography variant="h6" className={classes.title}>
+      <AppBar position="fixed">
+        <Toolbar className={classes.appBar}>
+          <Typography variant="h4" color="secondary" className={classes.title}>
             {t("title")}
           </Typography>
-          <Button onClick={onSignOut}>{t("signOut")}</Button>
+          <Button color="secondary" onClick={onSignOut}>{t("signOut")}</Button>
         </Toolbar>
       </AppBar>
       <div className={classes.toolbar} />
     </Fragment>
-  );
-
-  const renderDrawerList = () => (
-    <List>
-      {CONTENT_ROUTES.map(({ title, icon: IconComponent, location }) => (
-        <ListItem
-          button
-          key={title}
-          component={Link}
-          to={location}
-        >
-          <ListItemIcon>
-            <IconComponent />
-          </ListItemIcon>
-          <ListItemText primary={t(title)} />
-        </ListItem>
-      ))}
-    </List>
-  );
-
-  const renderInfo = () => (
-    <div className={classes.info}>
-      <ProfilePhoto
-        photoUrl={info.details?.photoUrl}
-        avatarStyle={classes.avatar}
-        onClick={() => history.replace(`${BASIC_INFO}/false`)}
-      />
-      <Typography className={classes.name}>{info.details?.firstName}</Typography>
-    </div>
-  );
-
-  const renderDrawer = () => (
-    <Drawer
-      className={classes.drawer}
-      variant="persistent"
-      anchor="left"
-      open={drawerOpen}
-      classes={{
-        paper: classes.drawerPaper,
-      }}
-    >
-      <div className={classes.drawerHeader}>
-        {renderInfo()}
-        <IconButton onClick={onDrawerClose}>
-          {theme.direction === 'ltr' ? <ChevronLeftIcon /> : <ChevronRightIcon />}
-        </IconButton>
-      </div>
-      <Divider />
-      {renderDrawerList()}
-    </Drawer>
   );
 
   const getWrappedComponent = (Component: ComponentType<any>) => () => (
@@ -201,10 +122,7 @@ const App = () => {
   const renderSwitch = () => (
     <main
       className={
-        clsx(
-          { [classes.content]: showAppBarAndDrawer },
-          { [classes.contentShift]: showAppBarAndDrawer && drawerOpen },
-        )
+        clsx({ [classes.content]: showAppBar })
       }
     >
       <Switch>
@@ -228,8 +146,7 @@ const App = () => {
   return (
     <ThemeProvider theme={theme}>
       <div className={classes.root}>
-        {showAppBarAndDrawer && renderAppBar()}
-        {showAppBarAndDrawer && renderDrawer()}
+        {showAppBar && renderAppBar()}
         {renderSwitch()}
         {renderSnack()}
       </div>
@@ -241,25 +158,18 @@ const useStyles = makeStyles((theme) => ({
   root: {
     flexGrow: 1,
   },
-  appBar: {
-    transition: theme.transitions.create(['margin', 'width'], {
-      easing: theme.transitions.easing.sharp,
-      duration: theme.transitions.duration.leavingScreen,
-    }),
-  },
-  appBarShift: {
-    width: `calc(100% - ${DRAWER_WIDTH}px)`,
-    marginLeft: DRAWER_WIDTH,
-    transition: theme.transitions.create(['margin', 'width'], {
-      easing: theme.transitions.easing.easeOut,
-      duration: theme.transitions.duration.enteringScreen,
-    }),
-  },
   menuButton: {
     marginRight: theme.spacing(2),
   },
+  appBar: {
+    display: 'flex',
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+  },
   title: {
-    flexGrow: 1,
+    margin: theme.spacing(0, 6, 0),
+    fontFamily: 'Roboto',
   },
   hide: {
     display: 'none',
@@ -296,18 +206,7 @@ const useStyles = makeStyles((theme) => ({
   },
   content: {
     flexGrow: 1,
-    padding: theme.spacing(3),
-    transition: theme.transitions.create('margin', {
-      easing: theme.transitions.easing.sharp,
-      duration: theme.transitions.duration.leavingScreen,
-    }),
-  },
-  contentShift: {
-    transition: theme.transitions.create('margin', {
-      easing: theme.transitions.easing.easeOut,
-      duration: theme.transitions.duration.enteringScreen,
-    }),
-    marginLeft: DRAWER_WIDTH,
+    padding: theme.spacing(3, 0, 3),
   },
 }));
 
