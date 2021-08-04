@@ -71,7 +71,7 @@ const Home = ({
       }
       setData({
         ...data,
-        data: [...result.data, ...result.data],
+        data: [...data.data, ...result.data],
         pagesFetched: data.pagesFetched + 1,
       });
     }
