@@ -31,7 +31,6 @@ import { BASIC_INFO, CONTENT, FORGOT_PASSWORD, HOME, SIGN_IN, SIGN_UP } from './
 import { AuthInfo, AuthState } from './types/auth';
 import { SnackInfo, SnackState } from './types/common';
 import auth from './utils/auth';
-import { DRAWER_WIDTH } from './constants/constants';
 import authInfo from './recoil/atoms/auth/authInfo';
 
 const theme = responsiveFontSizes(createTheme({
@@ -175,13 +174,6 @@ const useStyles = makeStyles((theme) => ({
     display: 'none',
   },
   toolbar: theme.mixins.toolbar,
-  drawer: {
-    width: DRAWER_WIDTH,
-    flexShrink: 0,
-  },
-  drawerPaper: {
-    width: DRAWER_WIDTH,
-  },
   drawerHeader: {
     display: 'flex',
     alignItems: 'center',

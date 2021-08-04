@@ -35,3 +35,9 @@ export interface MovieAnchorInfo {
   anchor: HTMLElement;
   item: Movie;
 };
+
+export interface PaginatedMovies {
+  data: Array<Movie>;
+  pagesFetched: number;
+  totalPages: number;
+};

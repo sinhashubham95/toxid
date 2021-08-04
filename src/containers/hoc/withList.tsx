@@ -16,17 +16,18 @@ const withList = <S, T extends ListInfo<S>,>(
 
   useEffect(() => {
     // fetch the data
-    (async () => {
-      const result = await fetcher();
-      if (result.error) {
-        // error occurred
-        showErrorMessage(result.error.message);
-        return;
-      }
-      setData(result);
-    })();
-    // eslint-disable-next-line
-  }, []);
+    if (!data) {
+      (async () => {
+        const result = await fetcher();
+        if (result.error) {
+          // error occurred
+          showErrorMessage(result.error.message);
+          return;
+        }
+        setData(result);
+      })();
+    }
+  }, [data, showErrorMessage]);
 
   const renderListItem = (value: S) => (
     <Component
