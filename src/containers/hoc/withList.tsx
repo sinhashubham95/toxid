@@ -15,23 +15,20 @@ const withList = <S, T extends ListInfo<S>,>(
   const [data, setData] = useState<T | null>(null);
 
   useEffect(() => {
-    if (!data) {
-      // fetch the data
-      (async () => {
-        const result = await fetcher();
-        if (result.error) {
-          // error occurred
-          showErrorMessage(result.error.message);
-          return;
-        }
-        setData(result);
-      })();
-    }
+    // fetch the data
+    (async () => {
+      const result = await fetcher();
+      if (result.error) {
+        // error occurred
+        showErrorMessage(result.error.message);
+        return;
+      }
+      setData(result);
+    })();
     // eslint-disable-next-line
-  }, [data]);
+  }, []);
 
   const renderListItem = (value: S) => (
-
     <Component
       key={JSON.stringify(value)}
       showSuccessMessage={showSuccessMessage}

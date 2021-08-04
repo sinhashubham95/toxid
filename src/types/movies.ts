@@ -4,8 +4,10 @@ export interface Movie {
   id: number;
   adult: boolean;
   imageUrl: string;
+  backdropImageUrl: string;
   genres: Array<number>;
   title: string;
+  description: string;
   rating: number;
 };
 
@@ -24,5 +26,12 @@ export interface MoviesResponse {
     genre_ids: Array<number>;
     original_title: string;
     poster_path: string;
+    backdrop_path: string;
+    overview: string;
   }>
+};
+
+export interface MovieAnchorInfo {
+  anchor: HTMLElement;
+  item: Movie;
 };
