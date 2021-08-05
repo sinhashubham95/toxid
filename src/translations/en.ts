@@ -20,6 +20,8 @@ const ENTranslations = {
   save: "Save",
   skip: "Skip for later",
   home: "Home",
+  movies: "Movies",
+  tv: "TV Shows",
   done: "Done",
 };
 

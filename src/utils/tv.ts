@@ -1,11 +1,11 @@
 import Axios from "axios";
 import Env from "./env";
-import { Movie as MoviesType, MoviesResponse } from "../types/movies";
-import { GET_ALL_MOVIES_PATH } from "../constants/api";
+import { GET_ALL_TV_SHOWS_PATH } from "../constants/api";
 import { Genre } from "../types/genres";
 import { PaginatedResponse } from "../types/common";
+import { TvResponse, Tv as TvType } from "../types/tv";
 
-class Movies {
+class Tv {
   private readonly axios = Axios.create({
     baseURL: Env.getTMDBApiBaseUrl(),
     timeout: 10000,
@@ -15,32 +15,30 @@ class Movies {
     },
   });
 
-  getPopularMovies = async (genre: Genre, pageNumber?: number): Promise<PaginatedResponse<MoviesType>> => {
+  getPopularTVShows = async (genre: Genre, pageNumber?: number): Promise<PaginatedResponse<TvType>> => {
     try {
-      const { status, data } = await this.axios.get(`${GET_ALL_MOVIES_PATH}&` +
+      const { status, data } = await this.axios.get(`${GET_ALL_TV_SHOWS_PATH}&` +
         `page=${pageNumber}&with_genres=${genre.id}`);
       if (status === 200) {
-        const movies = data as MoviesResponse;
+        const movies = data as TvResponse;
         return {
           pageNumber: movies.page,
           totalPages: movies.total_pages,
           total: movies.total_results,
           data: movies.results.map(({
             id,
-            adult,
             poster_path,
             backdrop_path,
             genre_ids,
-            title,
+            name,
             vote_average,
             overview,
           }) => ({
             id,
-            adult,
             imageUrl: `${Env.getTMDBImageApiBaseUrl()}${poster_path}`,
             backdropImageUrl: `${Env.getTMDBImageApiBaseUrl()}${backdrop_path}`,
             genres: genre_ids,
-            title,
+            title: name,
             description: overview,
             rating: vote_average,
           })),
@@ -52,7 +50,7 @@ class Movies {
     }
   };
 
-  private getError = (message: string): PaginatedResponse<MoviesType> => ({
+  private getError = (message: string): PaginatedResponse<TvType> => ({
     pageNumber: 0,
     totalPages: 0,
     total: 0,
@@ -63,4 +61,4 @@ class Movies {
   });
 }
 
-export default new Movies();
+export default new Tv();

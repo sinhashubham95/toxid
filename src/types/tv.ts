@@ -1,6 +1,5 @@
-export interface Movie {
+export interface Tv {
   id: number;
-  adult: boolean;
   imageUrl: string;
   backdropImageUrl: string;
   genres: Array<number>;
@@ -9,16 +8,15 @@ export interface Movie {
   rating: number;
 };
 
-export interface MoviesResponse {
+export interface TvResponse {
   page: number;
   total_pages: number;
   total_results: number;
   results: Array<{
-    adult: boolean;
     id: number;
     vote_average: number;
     genre_ids: Array<number>;
-    title: string;
+    name: string;
     poster_path: string;
     backdrop_path: string;
     overview: string;

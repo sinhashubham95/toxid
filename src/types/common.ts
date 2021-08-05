@@ -1,5 +1,3 @@
-import { SvgIconTypeMap } from "@material-ui/core";
-import { OverridableComponent } from "@material-ui/core/OverridableComponent";
 import { ClassValue } from "clsx";
 
 export enum SnackState {
@@ -19,7 +17,6 @@ export interface CommonProps {
 
 export interface ContentRoute {
   title: string;
-  icon: OverridableComponent<SvgIconTypeMap<{}, "svg">>;
   location: string;
 };
 
@@ -30,7 +27,8 @@ export interface ProfilePhotoProps {
   avatarStyle?: ClassValue;
 };
 
-export interface PageInfo extends ErrorResponse {
+export interface PaginatedResponse<T> extends ErrorResponse {
+  data: Array<T>;
   pageNumber: number;
   totalPages: number;
   total: number;
@@ -46,4 +44,10 @@ export interface ListInfo<T> extends ErrorResponse {
 
 export interface APIError {
   message: string;
+};
+
+export interface PaginatedData<T> {
+  data: Array<T>;
+  pagesFetched: number;
+  totalPages: number;
 };
