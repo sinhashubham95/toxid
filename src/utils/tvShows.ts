@@ -1,11 +1,11 @@
 import Axios from "axios";
 import Env from "./env";
-import { Movie as MoviesType, MoviesResponse } from "../types/movies";
-import { GET_ALL_MOVIES_PATH, GET_POPULAR_MOVIES_PATH, GET_TOP_RATED_MOVIES_PATH, GET_UPCOMING_MOVIES_PATH } from "../constants/api";
+import { GET_ALL_TV_SHOWS_PATH, GET_POPULAR_TV_SHOWS_PATH, GET_TOP_RATED_TV_SHOWS_PATH } from "../constants/api";
 import { Genre } from "../types/genres";
 import { PaginatedResponse } from "../types/common";
+import { TvShowsResponse, TvShow } from "../types/tvShows";
 
-class Movies {
+class TvShows {
   private readonly axios = Axios.create({
     baseURL: Env.getTMDBApiBaseUrl(),
     timeout: 10000,
@@ -15,17 +15,14 @@ class Movies {
     },
   });
 
-  getAllMovies = async (genre?: Genre, pageNumber?: number): Promise<PaginatedResponse<MoviesType>> =>
-    this.getMovies(`${GET_ALL_MOVIES_PATH}&page=${pageNumber}&with_genres=${genre?.id}`);
+  getAllTvShows = async (genre?: Genre, pageNumber?: number): Promise<PaginatedResponse<TvShow>> =>
+    this.getTvShows(`${GET_ALL_TV_SHOWS_PATH}&page=${pageNumber}&with_genres=${genre?.id}`);
 
-  getTopRatedMovies = async (_genre?: Genre, pageNumber?: number): Promise<PaginatedResponse<MoviesType>> =>
-    this.getMovies(`${GET_TOP_RATED_MOVIES_PATH}?page=${pageNumber}`);
+  getTopRatedTvShows = async (genre?: Genre, pageNumber?: number): Promise<PaginatedResponse<TvShow>> =>
+    this.getTvShows(`${GET_TOP_RATED_TV_SHOWS_PATH}?page=${pageNumber}`);
 
-  getPopularMovies = async (_genre?: Genre, pageNumber?: number): Promise<PaginatedResponse<MoviesType>> =>
-    this.getMovies(`${GET_POPULAR_MOVIES_PATH}?page=${pageNumber}`);
-
-  getUpcomingMovies = async (_genre?: Genre, pageNumber?: number): Promise<PaginatedResponse<MoviesType>> =>
-    this.getMovies(`${GET_UPCOMING_MOVIES_PATH}?page=${pageNumber}`);
+  getPopularTvShows = async (genre?: Genre, pageNumber?: number): Promise<PaginatedResponse<TvShow>> =>
+    this.getTvShows(`${GET_POPULAR_TV_SHOWS_PATH}?page=${pageNumber}`);
 
   private getImageUrl = (posterPath: string | null, backdropPath: string | null): string => {
     if (posterPath) {
@@ -47,32 +44,30 @@ class Movies {
     return '';
   };
 
-  private getMoviesResponse = (movies: MoviesResponse): PaginatedResponse<MoviesType> => ({
-    pageNumber: movies.page,
-    totalPages: movies.total_pages,
-    total: movies.total_results,
-    data: movies.results.map(({
+  private getTvShowsResponse = (tvShows: TvShowsResponse): PaginatedResponse<TvShow> => ({
+    pageNumber: tvShows.page,
+    totalPages: tvShows.total_pages,
+    total: tvShows.total_results,
+    data: tvShows.results.map(({
       id,
-      adult,
       poster_path,
       backdrop_path,
       genre_ids,
-      title,
+      name,
       vote_average,
       overview,
     }) => ({
       id,
-      adult,
       imageUrl: this.getImageUrl(poster_path, backdrop_path),
       backdropImageUrl: this.getBackdropImageUrl(poster_path, backdrop_path),
       genres: genre_ids,
-      title,
+      title: name,
       description: overview,
       rating: vote_average,
     })),
   });
 
-  private getError = (message: string): PaginatedResponse<MoviesType> => ({
+  private getError = (message: string): PaginatedResponse<TvShow> => ({
     pageNumber: 0,
     totalPages: 0,
     total: 0,
@@ -82,17 +77,18 @@ class Movies {
     },
   });
 
-  private getMovies = async (url: string): Promise<PaginatedResponse<MoviesType>> => {
+  private getTvShows = async (url: string): Promise<PaginatedResponse<TvShow>> => {
     try {
       const { status, data } = await this.axios.get(url);
       if (status === 200) {
-        return this.getMoviesResponse(data as MoviesResponse);
+        return this.getTvShowsResponse(data as TvShowsResponse);
+
       }
       return this.getError(data.status_message);
     } catch (e) {
       return this.getError(e.message);
     }
-  };
+  }
 }
 
-export default new Movies();
+export default new TvShows();

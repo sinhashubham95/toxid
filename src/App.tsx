@@ -13,6 +13,7 @@ import {
   Button,
   Snackbar,
   Typography,
+  ButtonBase,
 } from "@material-ui/core";
 import { Alert } from '@material-ui/lab';
 import {
@@ -26,8 +27,20 @@ import AuthSignInEmailPassword from "./containers/AuthSignInEmailPassword";
 import AuthSignUpEmailPassword from "./containers/AuthSignUpEmailPassword";
 import AuthResetEmailPassword from "./containers/AuthResetEmailPassword";
 import AuthUserInfo from "./containers/AuthUserInfo";
-import ContentHome from "./containers/ContentHome";
-import { BASIC_INFO, CONTENT, FORGOT_PASSWORD, HOME, SIGN_IN, SIGN_UP } from './constants/routes';
+import ContentHome from './containers/ContentHome';
+import ContentMovies from "./containers/ContentMovies";
+import ContentTvShows from "./containers/ContentTvShows";
+import {
+  BASIC_INFO,
+  CONTENT,
+  CONTENT_ROUTES,
+  FORGOT_PASSWORD,
+  HOME,
+  MOVIES,
+  SIGN_IN,
+  SIGN_UP,
+  TV,
+} from './constants/routes';
 import { AuthInfo, AuthState } from './types/auth';
 import { SnackInfo, SnackState } from './types/common';
 import auth from './utils/auth';
@@ -96,14 +109,35 @@ const App = () => {
     message,
   });
 
+  const renderNav = () => (
+    <div>
+      {CONTENT_ROUTES.map(({ title, location }) => (
+        <ButtonBase
+          key={title}
+          disabled={history.location.pathname === location}
+          onClick={() => history.replace(location)}
+          className={classes.navButton}
+          focusVisibleClassName={classes.focusNavButton}
+        >
+          <Typography variant="button" color="secondary" className={classes.navButtonTitle}>
+            {t(title)}
+          </Typography>
+        </ButtonBase>
+      ))}
+    </div>
+  );
+
   const renderAppBar = () => (
     <Fragment>
       <CssBaseline />
       <AppBar position="fixed">
         <Toolbar className={classes.appBar}>
-          <Typography variant="h4" color="secondary" className={classes.title}>
-            {t("title")}
-          </Typography>
+          <div className={classes.leftAppBar}>
+            <Typography variant="h4" color="secondary" className={classes.title}>
+              {t("title")}
+            </Typography>
+            {renderNav()}
+          </div>
           <Button color="secondary" onClick={onSignOut}>{t("signOut")}</Button>
         </Toolbar>
       </AppBar>
@@ -130,6 +164,8 @@ const App = () => {
         <Route path={FORGOT_PASSWORD} component={getWrappedComponent(AuthResetEmailPassword)} />
         <Route path={`${BASIC_INFO}/:init`} component={getWrappedComponent(AuthUserInfo)} />
         <Route path={HOME} component={getWrappedComponent(ContentHome)} />
+        <Route path={MOVIES} component={getWrappedComponent(ContentMovies)} />
+        <Route path={TV} component={getWrappedComponent(ContentTvShows)} />
       </Switch>
     </main>
   );
@@ -165,6 +201,26 @@ const useStyles = makeStyles((theme) => ({
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
+  },
+  leftAppBar: {
+    display: 'flex',
+    flexDirection: 'row',
+    justifyContent: 'flex-start',
+    alignItems: 'center',
+  },
+  navButton: {
+    margin: theme.spacing(0, 2, 0),
+    '&:hover, &$focusNavButton': {
+      zIndex: 1,
+      '& $navButtonTitle': {
+        opacity: 0.6,
+      },
+    },
+  },
+  focusNavButton: {},
+  navButtonTitle: {
+    transition: theme.transitions.create('opacity'),
+    padding: theme.spacing(1),
   },
   title: {
     margin: theme.spacing(0, 6, 0),

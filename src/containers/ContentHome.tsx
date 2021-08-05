@@ -1,11 +1,5 @@
-import { Genres, Genre } from '../types/genres';
-import genres from '../utils/genres';
-import Home from './content/Home';
-import withList from './hoc/withList';
+import Home from "./content/Home";
 
-const ContentHome = withList<Genre, Genres>(
-  Home,
-  genres.getGenres,
-);
+const ContentHome = Home;
 
 export default ContentHome;

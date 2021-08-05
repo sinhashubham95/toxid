@@ -20,7 +20,14 @@ const ENTranslations = {
   save: "Save",
   skip: "Skip for later",
   home: "Home",
+  movies: "Movies",
+  tv: "TV Shows",
   done: "Done",
+  topRatedTvShows: "Top-Rated TV Shows",
+  popularTvShows: "Popular TV Shows",
+  topRatedMovies: "Top-Rated Movies",
+  popularMovies: "Popular Movies",
+  upcomingMovies: "Upcoming Movies",
 };
 
 export default ENTranslations;
