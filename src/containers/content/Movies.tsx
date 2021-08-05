@@ -26,7 +26,7 @@ const Movies = ({
 
   const renderBasicCard = () => (
     <Card
-      aria-owns={'card-popover'}
+      aria-owns="card-popover"
       aria-haspopup="true"
       className={classes.card}
       onMouseEnter={onCardEnter}

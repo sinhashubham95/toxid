@@ -1,4 +1,5 @@
 import { ClassValue } from "clsx";
+import { MouseEvent } from "react";
 
 export enum SnackState {
   Success = "success",
@@ -21,8 +22,11 @@ export interface ContentRoute {
 };
 
 export interface ProfilePhotoProps {
+  id?: string;
   onFileChange?: (file: File) => void;
-  onClick?: () => void;
+  onClick?: (event: MouseEvent<HTMLButtonElement>) => void;
+  onMouseEnter?: (event: MouseEvent<HTMLDivElement>) => void;
+  onMouseLeave?: () => void;
   photoUrl: string | null | undefined;
   avatarStyle?: ClassValue;
 };
