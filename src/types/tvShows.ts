@@ -1,4 +1,4 @@
-export interface Tv {
+export interface TvShow {
   id: number;
   imageUrl: string;
   backdropImageUrl: string;
@@ -8,7 +8,7 @@ export interface Tv {
   rating: number;
 };
 
-export interface TvResponse {
+export interface TvShowsResponse {
   page: number;
   total_pages: number;
   total_results: number;

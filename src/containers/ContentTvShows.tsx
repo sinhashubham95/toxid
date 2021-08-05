@@ -1,16 +1,16 @@
 import { Genres, Genre } from '../types/genres';
-import { Tv as TvType } from '../types/tv';
+import { TvShow } from '../types/tvShows';
 import genres from '../utils/genres';
-import tv from '../utils/tv';
-import Tv from './content/Tv';
+import tvShows from '../utils/tvShows';
+import TvShows from './content/TvShows';
 import withList from './hoc/withList';
 import withSlider from './hoc/withSlider';
 
 const ContentTv = withList<Genre, Genres>(
-  withSlider<Genre, TvType>(
-    Tv,
+  withSlider<Genre, TvShow>(
+    TvShows,
     (genre: Genre) => genre.title,
-    tv.getPopularTVShows,
+    tvShows.getAllTvShows,
   ),
   genres.getTVGenres,
 );

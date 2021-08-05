@@ -8,12 +8,12 @@ import {
   Popover,
   Typography,
 } from "@material-ui/core";
-import { Tv as TvType } from "../../types/tv";
+import { TvShow } from "../../types/tvShows";
 
-const Tv = ({
+const TvShows = ({
   data,
 }: {
-  data: TvType,
+  data: TvShow,
 }) => {
   const classes = useStyles();
 
@@ -130,4 +130,4 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-export default Tv;
+export default TvShows;

@@ -22,11 +22,11 @@ export const CONTENT_ROUTES: Array<ContentRoute> = [
     location: HOME,
   },
   {
-    title: "movies",
-    location: MOVIES,
-  },
-  {
     title: "tv",
     location: TV,
+  },
+  {
+    title: "movies",
+    location: MOVIES,
   },
 ];

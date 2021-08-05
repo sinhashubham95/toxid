@@ -29,7 +29,7 @@ import AuthResetEmailPassword from "./containers/AuthResetEmailPassword";
 import AuthUserInfo from "./containers/AuthUserInfo";
 import ContentHome from './containers/ContentHome';
 import ContentMovies from "./containers/ContentMovies";
-import ContentTv from "./containers/ContentTv";
+import ContentTvShows from "./containers/ContentTvShows";
 import {
   BASIC_INFO,
   CONTENT,
@@ -165,7 +165,7 @@ const App = () => {
         <Route path={`${BASIC_INFO}/:init`} component={getWrappedComponent(AuthUserInfo)} />
         <Route path={HOME} component={getWrappedComponent(ContentHome)} />
         <Route path={MOVIES} component={getWrappedComponent(ContentMovies)} />
-        <Route path={TV} component={getWrappedComponent(ContentTv)} />
+        <Route path={TV} component={getWrappedComponent(ContentTvShows)} />
       </Switch>
     </main>
   );

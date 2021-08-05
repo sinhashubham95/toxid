@@ -10,7 +10,7 @@ const ContentMovies = withList<Genre, Genres>(
   withSlider<Genre, Movie>(
     Movies,
     (genre: Genre) => genre.title,
-    movies.getPopularMovies,
+    movies.getAllMovies,
   ),
   genres.getMovieGenres,
 );
