@@ -9,7 +9,8 @@ import withSlider from './hoc/withSlider';
 const ContentTv = withList<Genre, Genres>(
   withSlider<Genre, TvShow>(
     TvShows,
-    (genre: Genre) => genre.title,
+    (genre?: Genre) => genre?.title,
+    (item: TvShow) => item.id,
     tvShows.getAllTvShows,
   ),
   genres.getTVGenres,

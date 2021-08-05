@@ -18,14 +18,34 @@ class Movies {
   getAllMovies = async (genre?: Genre, pageNumber?: number): Promise<PaginatedResponse<MoviesType>> =>
     this.getMovies(`${GET_ALL_MOVIES_PATH}&page=${pageNumber}&with_genres=${genre?.id}`);
 
-  getTopRatedMovies = async (pageNumber?: number): Promise<PaginatedResponse<MoviesType>> =>
-    this.getMovies(`${GET_TOP_RATED_MOVIES_PATH}&page=${pageNumber}`);
+  getTopRatedMovies = async (_genre?: Genre, pageNumber?: number): Promise<PaginatedResponse<MoviesType>> =>
+    this.getMovies(`${GET_TOP_RATED_MOVIES_PATH}?page=${pageNumber}`);
 
-  getPopularMovies = async (pageNumber?: number): Promise<PaginatedResponse<MoviesType>> =>
-    this.getMovies(`${GET_POPULAR_MOVIES_PATH}&page=${pageNumber}`);
+  getPopularMovies = async (_genre?: Genre, pageNumber?: number): Promise<PaginatedResponse<MoviesType>> =>
+    this.getMovies(`${GET_POPULAR_MOVIES_PATH}?page=${pageNumber}`);
 
-  getUpcomingMovies = async (pageNumber?: number): Promise<PaginatedResponse<MoviesType>> =>
-    this.getMovies(`${GET_UPCOMING_MOVIES_PATH}&page=${pageNumber}`);
+  getUpcomingMovies = async (_genre?: Genre, pageNumber?: number): Promise<PaginatedResponse<MoviesType>> =>
+    this.getMovies(`${GET_UPCOMING_MOVIES_PATH}?page=${pageNumber}`);
+
+  private getImageUrl = (posterPath: string | null, backdropPath: string | null): string => {
+    if (posterPath) {
+      return `${Env.getTMDBImageApiBaseUrl()}${posterPath}`;
+    }
+    if (backdropPath) {
+      return `${Env.getTMDBImageApiBaseUrl()}${backdropPath}`
+    }
+    return '';
+  };
+
+  private getBackdropImageUrl = (posterPath: string | null, backdropPath: string | null): string => {
+    if (backdropPath) {
+      return `${Env.getTMDBImageApiBaseUrl()}${backdropPath}`
+    }
+    if (posterPath) {
+      return `${Env.getTMDBImageApiBaseUrl()}${posterPath}`;
+    }
+    return '';
+  };
 
   private getMoviesResponse = (movies: MoviesResponse): PaginatedResponse<MoviesType> => ({
     pageNumber: movies.page,
@@ -43,8 +63,8 @@ class Movies {
     }) => ({
       id,
       adult,
-      imageUrl: `${Env.getTMDBImageApiBaseUrl()}${poster_path}`,
-      backdropImageUrl: `${Env.getTMDBImageApiBaseUrl()}${backdrop_path}`,
+      imageUrl: this.getImageUrl(poster_path, backdrop_path),
+      backdropImageUrl: this.getBackdropImageUrl(poster_path, backdrop_path),
       genres: genre_ids,
       title,
       description: overview,

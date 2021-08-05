@@ -9,7 +9,8 @@ import withSlider from './hoc/withSlider';
 const ContentMovies = withList<Genre, Genres>(
   withSlider<Genre, Movie>(
     Movies,
-    (genre: Genre) => genre.title,
+    (genre?: Genre) => genre?.title,
+    (item: Movie) => item.id,
     movies.getAllMovies,
   ),
   genres.getMovieGenres,

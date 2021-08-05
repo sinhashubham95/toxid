@@ -9,13 +9,14 @@ const withSlider = <S, T,>(
   Component: FunctionComponent<{
     data: T,
   }>,
-  getTitle: (param: S) => string,
-  fetcher: (param: S, pageNumber?: number) => Promise<PaginatedResponse<T>>,
+  getTitle: (param?: S) => string | undefined,
+  getKey: (item: T) => number,
+  fetcher: (param?: S, pageNumber?: number) => Promise<PaginatedResponse<T>>,
 ) => ({
   data: param,
   showErrorMessage,
 }: {
-  data: S,
+  data?: S,
   showErrorMessage: (message: string) => void,
 }) => {
     const classes = useStyles();
@@ -86,6 +87,7 @@ const withSlider = <S, T,>(
 
     const renderCard = (item: T) => (
       <Component
+        key={getKey(item)}
         data={item}
       />
     );

@@ -18,11 +18,31 @@ class TvShows {
   getAllTvShows = async (genre?: Genre, pageNumber?: number): Promise<PaginatedResponse<TvShow>> =>
     this.getTvShows(`${GET_ALL_TV_SHOWS_PATH}&page=${pageNumber}&with_genres=${genre?.id}`);
 
-  getTopRatedTvShows = async (pageNumber?: number): Promise<PaginatedResponse<TvShow>> =>
-    this.getTvShows(`${GET_TOP_RATED_TV_SHOWS_PATH}&page=${pageNumber}`);
+  getTopRatedTvShows = async (genre?: Genre, pageNumber?: number): Promise<PaginatedResponse<TvShow>> =>
+    this.getTvShows(`${GET_TOP_RATED_TV_SHOWS_PATH}?page=${pageNumber}`);
 
-  getPopularTvShows = async (pageNumber?: number): Promise<PaginatedResponse<TvShow>> =>
-    this.getTvShows(`${GET_POPULAR_TV_SHOWS_PATH}&page=${pageNumber}`);
+  getPopularTvShows = async (genre?: Genre, pageNumber?: number): Promise<PaginatedResponse<TvShow>> =>
+    this.getTvShows(`${GET_POPULAR_TV_SHOWS_PATH}?page=${pageNumber}`);
+
+  private getImageUrl = (posterPath: string | null, backdropPath: string | null): string => {
+    if (posterPath) {
+      return `${Env.getTMDBImageApiBaseUrl()}${posterPath}`;
+    }
+    if (backdropPath) {
+      return `${Env.getTMDBImageApiBaseUrl()}${backdropPath}`
+    }
+    return '';
+  };
+
+  private getBackdropImageUrl = (posterPath: string | null, backdropPath: string | null): string => {
+    if (backdropPath) {
+      return `${Env.getTMDBImageApiBaseUrl()}${backdropPath}`
+    }
+    if (posterPath) {
+      return `${Env.getTMDBImageApiBaseUrl()}${posterPath}`;
+    }
+    return '';
+  };
 
   private getTvShowsResponse = (tvShows: TvShowsResponse): PaginatedResponse<TvShow> => ({
     pageNumber: tvShows.page,
@@ -38,8 +58,8 @@ class TvShows {
       overview,
     }) => ({
       id,
-      imageUrl: `${Env.getTMDBImageApiBaseUrl()}${poster_path}`,
-      backdropImageUrl: `${Env.getTMDBImageApiBaseUrl()}${backdrop_path}`,
+      imageUrl: this.getImageUrl(poster_path, backdrop_path),
+      backdropImageUrl: this.getBackdropImageUrl(poster_path, backdrop_path),
       genres: genre_ids,
       title: name,
       description: overview,

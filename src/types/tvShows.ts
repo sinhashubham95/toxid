@@ -17,8 +17,8 @@ export interface TvShowsResponse {
     vote_average: number;
     genre_ids: Array<number>;
     name: string;
-    poster_path: string;
-    backdrop_path: string;
+    poster_path: string | null;
+    backdrop_path: string | null;
     overview: string;
   }>
 };
