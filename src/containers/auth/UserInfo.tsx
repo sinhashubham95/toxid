@@ -96,7 +96,7 @@ const UserInfo = ({ showErrorMessage }: CommonProps) => {
   const onSkip = () => history.replace(HOME);
 
   const uploadFile = async (file: File) => {
-    const result = await storage.uploadFile(PROFILE_PHOTO, file);
+    const result = await storage.uploadFile(`${info.details?.userId}-${PROFILE_PHOTO}`, file);
     if (result.error) {
       // some error occurred
       showErrorMessage(result.error.message);
