@@ -225,7 +225,7 @@ const useStyles = makeStyles((theme) => ({
     margin: theme.spacing(0, 2, 0),
     '&:hover, &$focusNavButton': {
       zIndex: 1,
-      '& $navButtonTitle': {
+      '&$navButtonTitle': {
         opacity: 0.6,
       },
     },
@@ -236,7 +236,7 @@ const useStyles = makeStyles((theme) => ({
     padding: theme.spacing(1),
   },
   title: {
-    margin: theme.spacing(0, 6, 0),
+    marginRight: theme.spacing(3),
     fontFamily: 'Roboto',
   },
   hide: {

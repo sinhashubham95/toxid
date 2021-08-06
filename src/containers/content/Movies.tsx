@@ -7,15 +7,23 @@ import {
   makeStyles,
   Popover,
   Typography,
+  useMediaQuery,
+  useTheme,
 } from "@material-ui/core";
 import { Movie } from "../../types/movies";
 
 const Movies = ({
   data,
+  popover,
 }: {
   data: Movie,
+  popover: boolean,
 }) => {
   const classes = useStyles();
+
+  // handling media
+  const theme = useTheme();
+  const belowSm = useMediaQuery(theme.breakpoints.down('sm'));
 
   const [cardAnchor, setCardAnchor] = useState<HTMLElement | null>(null);
 
@@ -66,7 +74,7 @@ const Movies = ({
       className={classes.popover}
       open={!!cardAnchor}
       anchorEl={cardAnchor}
-      anchorOrigin={{
+      anchorOrigin={belowSm ? undefined : {
         vertical: 'center',
         horizontal: 'center',
       }}
@@ -84,7 +92,7 @@ const Movies = ({
   return (
     <div key={data.id}>
       {renderBasicCard()}
-      {cardAnchor && renderCardPopover()}
+      {popover && cardAnchor && renderCardPopover()}
     </div>
   );
 };
@@ -136,6 +144,9 @@ const useStyles = makeStyles((theme) => ({
   detailedCard: {
     minHeight: theme.spacing(30),
     width: theme.spacing(60),
+    [theme.breakpoints.down('sm')]: {
+      width: theme.spacing(40),
+    },
   },
   detailedMedia: {
     height: theme.spacing(30),

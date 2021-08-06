@@ -1,6 +1,7 @@
 import { createRef, useEffect, useState, FunctionComponent } from "react";
 import Slider from "react-slick";
-import { makeStyles, Typography, IconButton, useTheme, useMediaQuery } from "@material-ui/core";
+import clsx from 'clsx';
+import { makeStyles, Typography, useTheme, useMediaQuery, ButtonBase } from "@material-ui/core";
 import ChevronLeft from "@material-ui/icons/ChevronLeft";
 import ChevronRight from "@material-ui/icons/ChevronRight";
 import { PaginatedData, PaginatedResponse } from "../../types/common";
@@ -8,6 +9,7 @@ import { PaginatedData, PaginatedResponse } from "../../types/common";
 const withSlider = <S, T,>(
   Component: FunctionComponent<{
     data: T,
+    popover: boolean,
   }>,
   getTitle: (param?: S) => string | undefined,
   getKey: (item: T) => number,
@@ -26,6 +28,7 @@ const withSlider = <S, T,>(
     const belowSm = useMediaQuery(theme.breakpoints.down('sm'));
 
     const slider = createRef<Slider>();
+    const [slideIndex, setSlideIndex] = useState(0);
 
     const [data, setData] = useState<PaginatedData<T>>({
       data: [],
@@ -54,7 +57,9 @@ const withSlider = <S, T,>(
     }, [data, param, showErrorMessage]);
 
     const onSliderChange = async (index: number) => {
-      if (index >= (data.data.length - 10)) {
+      const slides = belowSm ? 2 : 5;
+      setSlideIndex(index);
+      if (index >= (data.data.length - 2 * slides)) {
         // in this case we need to fetch the next page
         // when we are on the second last page
         const result = await fetcher(param, data.pagesFetched + 1);
@@ -71,42 +76,85 @@ const withSlider = <S, T,>(
       }
     };
 
-    const renderPreviousArrow = () => (
-      <IconButton
-        size="medium"
+    const renderCardWithLeftButton = (item: T) => (
+      <ButtonBase
+        focusRipple
+        key={getKey(item)}
+        className={classes.buttonCard}
         onClick={() => slider.current?.slickPrev()}
+        focusVisibleClassName={classes.focusVisibleButtonCard}
       >
-        <ChevronLeft fontSize="large" />
-      </IconButton>
+        <span className={classes.backdrop} />
+        <Component
+          data={item}
+          popover={false}
+        />
+        <ChevronLeft
+          // color="secondary"
+          fontSize={belowSm ? "small" : "large"}
+          className={clsx(classes.button, classes.leftButton)}
+        />
+      </ButtonBase>
     );
 
-    const renderNextArrow = () => (
-      <IconButton
-        size="medium"
+    const renderCardWithRightButton = (item: T) => (
+      <ButtonBase
+        focusRipple
+        key={getKey(item)}
+        className={classes.buttonCard}
+        focusVisibleClassName={classes.focusVisibleButtonCard}
         onClick={() => slider.current?.slickNext()}
       >
-        <ChevronRight fontSize="large" />
-      </IconButton>
+        <span className={classes.backdrop} />
+        <ChevronRight
+          // color="secondary"
+          fontSize={belowSm ? "small" : "large"}
+          className={clsx(classes.button, classes.rightButton)}
+        />
+        <Component
+          data={item}
+          popover={false}
+        />
+      </ButtonBase>
     );
 
-    const renderCard = (item: T) => (
-      <Component
-        key={getKey(item)}
-        data={item}
-      />
-    );
+    const renderCard = (slides: number) => (item: T, index: number) => {
+      const total = data.data.length;
+      const left = slideIndex - Math.floor(slides / 2);
+      const right = slideIndex + Math.floor((slides - 1) / 2);
+      const leftButtonIndex = (left - 1 + total) % total;
+      const rightButtonIndex = (right + 1) % total;
+      if (index === leftButtonIndex) {
+        // render with left button
+        return renderCardWithLeftButton(item);
+      }
+      if (index === rightButtonIndex) {
+        // render with right button
+        return renderCardWithRightButton(item);
+      }
+      return (
+        <Component
+          key={getKey(item)}
+          data={item}
+          popover={(index >= left && index <= right) ||
+            (left < 0 && (index >= (left + total) || index <= right)) ||
+            (right >= total && (index >= left || index <= right % total))}
+        />
+      );
+    };
 
     const renderSlider = (slides: number) => (
       <Slider
         ref={slider}
         className={classes.slider}
-        infinite={false}
+        infinite
+        centerMode
         lazyLoad="progressive"
         slidesToShow={slides}
         slidesToScroll={slides}
         afterChange={onSliderChange}
       >
-        {data.data.map(renderCard)}
+        {data.data.map(renderCard(slides))}
       </Slider>
     );
 
@@ -114,10 +162,8 @@ const withSlider = <S, T,>(
       <div className={classes.root}>
         <Typography component="h5" variant="h6" className={classes.title}>{getTitle(param)}</Typography>
         <div className={classes.page}>
-          {renderPreviousArrow()}
           {belowSm && renderSlider(2)}
           {!belowSm && renderSlider(5)}
-          {renderNextArrow()}
         </div>
       </div>
     );
@@ -134,7 +180,7 @@ const useStyles = makeStyles((theme) => ({
     marginBottom: theme.spacing(4),
   },
   title: {
-    margin: theme.spacing(1, 10, 0)
+    margin: theme.spacing(1, 4, 1),
   },
   page: {
     display: 'flex',
@@ -143,6 +189,54 @@ const useStyles = makeStyles((theme) => ({
     alignItems: 'center',
   },
   slider: {
-    width: '92%',
+    width: '100%',
+  },
+  buttonCard: {
+    display: 'flex',
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    margin: 0,
+    padding: 0,
+    '&:hover': {
+      opacity: 0.4,
+    },
+    '&:hover, &$focusVisible': {
+      '& $button': {
+        opacity: 1,
+      },
+      '& $backdrop': {
+        opacity: 0.15,
+      },
+    },
+  },
+  focusVisibleButtonCard: {},
+  backdrop: {
+    margin: theme.spacing(0, 2, 0),
+    position: 'absolute',
+    left: 0,
+    right: 0,
+    top: 0,
+    bottom: 0,
+    backgroundColor: theme.palette.common.black,
+    opacity: 0.4,
+    transition: theme.transitions.create('opacity'),
+  },
+  button: {
+    zIndex: 1,
+    opacity: 0,
+    transition: theme.transitions.create('opacity'),
+    position: 'absolute',
+    display: 'flex',
+    flexDirection: 'column',
+    justifyContent: 'center',
+    alignItems: 'center',
+    top: '50%',
+  },
+  leftButton: {
+    right: theme.spacing(2),
+  },
+  rightButton: {
+    left: theme.spacing(2),
   },
 }));

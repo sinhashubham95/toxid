@@ -251,7 +251,7 @@ const UserInfo = ({ showErrorMessage }: CommonProps) => {
         color="secondary"
         onClick={onSkip}
       >
-        {history.length === 1 ? t("skip") : t("done")}
+        {JSON.parse(init) ? t("skip") : t("done")}
       </Button>
     </Grid>
   );
