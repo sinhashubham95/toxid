@@ -1,7 +1,17 @@
 import { createRef, useEffect, useState, FunctionComponent } from "react";
 import Slider from "react-slick";
+import { useHistory } from "react-router-dom";
+import { useTranslation } from "react-i18next";
 import clsx from 'clsx';
-import { makeStyles, Typography, useTheme, useMediaQuery, ButtonBase } from "@material-ui/core";
+import {
+  makeStyles,
+  Typography,
+  useTheme,
+  useMediaQuery,
+  ButtonBase,
+  SvgIconTypeMap,
+} from "@material-ui/core";
+import { OverridableComponent } from "@material-ui/core/OverridableComponent";
 import ChevronLeft from "@material-ui/icons/ChevronLeft";
 import ChevronRight from "@material-ui/icons/ChevronRight";
 import { PaginatedData, PaginatedResponse } from "../../types/common";
@@ -11,6 +21,7 @@ const withSlider = <S, T,>(
     data: T,
     popover: boolean,
   }>,
+  location: string | ((param?: S) => string),
   getTitle: (param?: S) => string | undefined,
   getKey: (item: T) => number,
   fetcher: (param?: S, pageNumber?: number) => Promise<PaginatedResponse<T>>,
@@ -26,6 +37,10 @@ const withSlider = <S, T,>(
     // handling media
     const theme = useTheme();
     const belowSm = useMediaQuery(theme.breakpoints.down('sm'));
+
+    const history = useHistory();
+
+    const { t } = useTranslation();
 
     const slider = createRef<Slider>();
     const [slideIndex, setSlideIndex] = useState(0);
@@ -82,12 +97,34 @@ const withSlider = <S, T,>(
       }
     };
 
-    const renderCardWithLeftButton = (item: T) => (
+    const renderTitle = () => (
+      <ButtonBase
+        className={classes.titleButton}
+        onClick={() => (typeof location === 'string' ?
+          history.replace(location) : history.replace(location(param)))}
+        focusVisibleClassName={classes.focusVisibleTitleButton}
+      >
+        <Typography component="h5" variant="h6" className={classes.title}>
+          {getTitle(param)}
+        </Typography>
+        <Typography component="h5" variant="body1" className={classes.explore}>
+          {t("explore")}
+        </Typography>
+        <ChevronRight className={classes.right} />
+      </ButtonBase>
+    );
+
+    const renderCardWithButton = (
+      item: T,
+      IconComponent: OverridableComponent<SvgIconTypeMap<{}, "svg">>,
+      onClick: () => void,
+      iconStyle: string,
+    ) => (
       <ButtonBase
         focusRipple
         key={getKey(item)}
         className={classes.buttonCard}
-        onClick={() => slider.current?.slickPrev()}
+        onClick={onClick}
         focusVisibleClassName={classes.focusVisibleButtonCard}
       >
         <span className={classes.backdrop} />
@@ -95,13 +132,12 @@ const withSlider = <S, T,>(
           data={item}
           popover={false}
         />
-        <ChevronLeft
-          // color="secondary"
+        <IconComponent
           fontSize={belowSm ? "small" : "large"}
           className={
             clsx(
               classes.button,
-              classes.leftButton,
+              iconStyle,
               { [classes.hoverButton]: enter },
             )
           }
@@ -109,31 +145,18 @@ const withSlider = <S, T,>(
       </ButtonBase>
     );
 
-    const renderCardWithRightButton = (item: T) => (
-      <ButtonBase
-        focusRipple
-        key={getKey(item)}
-        className={classes.buttonCard}
-        focusVisibleClassName={classes.focusVisibleButtonCard}
-        onClick={() => slider.current?.slickNext()}
-      >
-        <span className={classes.backdrop} />
-        <ChevronRight
-          // color="secondary"
-          fontSize={belowSm ? "small" : "large"}
-          className={
-            clsx(
-              classes.button,
-              classes.rightButton,
-              { [classes.hoverButton]: enter },
-            )
-          }
-        />
-        <Component
-          data={item}
-          popover={false}
-        />
-      </ButtonBase>
+    const renderCardWithLeftButton = (item: T) => renderCardWithButton(
+      item,
+      ChevronLeft,
+      () => slider.current?.slickPrev(),
+      classes.leftButton,
+    );
+
+    const renderCardWithRightButton = (item: T) => renderCardWithButton(
+      item,
+      ChevronRight,
+      () => slider.current?.slickNext(),
+      classes.rightButton,
     );
 
     const renderCard = (slides: number) => (item: T, index: number) => {
@@ -178,7 +201,7 @@ const withSlider = <S, T,>(
 
     return (
       <div className={classes.root}>
-        <Typography component="h5" variant="h6" className={classes.title}>{getTitle(param)}</Typography>
+        {renderTitle()}
         <div className={classes.page} onMouseEnter={onEnter} onMouseLeave={onLeave}>
           {belowSm && renderSlider(2)}
           {!belowSm && renderSlider(5)}
@@ -197,8 +220,44 @@ const useStyles = makeStyles((theme) => ({
     width: '100%',
     marginBottom: theme.spacing(4),
   },
-  title: {
+  titleButton: {
+    display: 'flex',
+    width: 'fit-content',
+    flexDirection: 'row',
+    justifyContent: 'flex-start',
+    alignItems: 'center',
     margin: theme.spacing(1, 4, 1),
+    '&:hover, &$focusVisibleTitleButton': {
+      '& $title': {
+        opacity: 0.7,
+      },
+      '& $explore': {
+        transform: 'scale(1)',
+      },
+      '& $right': {
+        opacity: 0.7,
+      },
+    },
+  },
+  focusVisibleTitleButton: {},
+  title: {
+    opacity: 1,
+    transition: theme.transitions.create('opacity'),
+    margin: theme.spacing(0, 2, 0),
+  },
+  explore: {
+    transform: 'scale(0)',
+    transition: theme.transitions.create(
+      'transform',
+      {
+        easing: theme.transitions.easing.easeIn,
+        delay: 200,
+      },
+    ),
+  },
+  right: {
+    opacity: 0,
+    transition: theme.transitions.create('opacity'),
   },
   page: {
     display: 'flex',
@@ -219,7 +278,7 @@ const useStyles = makeStyles((theme) => ({
     '&:hover': {
       opacity: 0.4,
     },
-    '&:hover, &$focusVisible': {
+    '&:hover, &$focusVisibleButtonCard': {
       '& $button': {
         opacity: 1,
       },

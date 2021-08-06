@@ -29,7 +29,8 @@ const ENTranslations = {
   topRatedMovies: "Top-Rated Movies",
   popularMovies: "Popular Movies",
   upcomingMovies: "Upcoming Movies",
-  browse: "Browse"
+  browse: "Browse",
+  explore: "Explore All",
 };
 
 export default ENTranslations;

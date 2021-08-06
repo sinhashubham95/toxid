@@ -11,6 +11,7 @@ import {
   useTheme,
 } from "@material-ui/core";
 import { Movie } from "../../types/movies";
+import { POPOVER_DELAY_MILLIS } from "../../constants/constants";
 
 const Movies = ({
   data,
@@ -25,12 +26,20 @@ const Movies = ({
   const theme = useTheme();
   const belowSm = useMediaQuery(theme.breakpoints.down('sm'));
 
+  const [cardTimeout, setCardTimeout] = useState<number>(0);
   const [cardAnchor, setCardAnchor] = useState<HTMLElement | null>(null);
 
   const onCardEnter = (event: MouseEvent<HTMLDivElement>) =>
-    setCardAnchor(event.currentTarget);
+    setCardTimeout(setTimeout((target: HTMLElement) => setCardAnchor(target),
+      POPOVER_DELAY_MILLIS, event.currentTarget));
 
-  const onCardLeave = () => setCardAnchor(null);
+  const onCardLeave = () => {
+    if (cardTimeout) {
+      clearTimeout(cardTimeout);
+      setCardTimeout(0);
+    }
+    setCardAnchor(null);
+  };
 
   const renderBasicCard = () => (
     <Card

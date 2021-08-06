@@ -1,3 +1,4 @@
+import { EXPLORE_TV_SHOWS } from '../constants/routes';
 import { Genres, Genre } from '../types/genres';
 import { TvShow } from '../types/tvShows';
 import genres from '../utils/genres';
@@ -9,6 +10,7 @@ import withSlider from './hoc/withSlider';
 const ContentTv = withList<Genre, Genres>(
   withSlider<Genre, TvShow>(
     TvShows,
+    (genre?: Genre) => `${EXPLORE_TV_SHOWS}/${genre?.id}/${genre?.title}`,
     (genre?: Genre) => genre?.title,
     (item: TvShow) => item.id,
     tvShows.getAllTvShows,
