@@ -8,7 +8,14 @@ import TvShows from './TvShows';
 import Movies from './Movies';
 import tvShows from '../../utils/tvShows';
 import movies from '../../utils/movies';
-import { CommonProps } from '../../types/common';
+import { CommonProps, PaginatedResponse } from '../../types/common';
+import {
+  EXPLORE_POPULAR_MOVIES,
+  EXPLORE_POPULAR_TV_SHOWS,
+  EXPLORE_TOP_RATED_MOVIES,
+  EXPLORE_TOP_RATED_TV_SHOWS,
+  EXPLORE_UPCOMING_MOVIES,
+} from '../../constants/routes';
 
 const Home = ({
   showErrorMessage,
@@ -21,14 +28,38 @@ const Home = ({
 
   const getMovieKey = (item: Movie) => item.id;
 
+  const renderSliderForTvShows = (
+    title: string,
+    location: string,
+    fetcher: (genre?: Genre, pageNumber?: number) => Promise<PaginatedResponse<TvShow>>,
+  ) => withSlider<Genre, TvShow>(
+    TvShows,
+    location,
+    () => title,
+    getTvShowKey,
+    fetcher,
+  )({ showErrorMessage });
+
+  const renderSliderForMovies = (
+    title: string,
+    location: string,
+    fetcher: (genre?: Genre, pageNumber?: number) => Promise<PaginatedResponse<Movie>>,
+  ) => withSlider<Genre, Movie>(
+    Movies,
+    location,
+    () => title,
+    getMovieKey,
+    fetcher,
+  )({ showErrorMessage });
+
   return (
     <div className={classes.root}>
       <List>
-        {withSlider<Genre, TvShow>(TvShows, () => t("topRatedTvShows"), getTvShowKey, tvShows.getTopRatedTvShows)({ showErrorMessage })}
-        {withSlider<Genre, TvShow>(TvShows, () => t("popularTvShows"), getTvShowKey, tvShows.getPopularTvShows)({ showErrorMessage })}
-        {withSlider<Genre, Movie>(Movies, () => t("topRatedMovies"), getMovieKey, movies.getTopRatedMovies)({ showErrorMessage })}
-        {withSlider<Genre, Movie>(Movies, () => t("popularMovies"), getMovieKey, movies.getPopularMovies)({ showErrorMessage })}
-        {withSlider<Genre, Movie>(Movies, () => t("upcomingMovies"), getMovieKey, movies.getUpcomingMovies)({ showErrorMessage })}
+        {renderSliderForTvShows(t("topRatedTvShows"), EXPLORE_TOP_RATED_TV_SHOWS, tvShows.getTopRatedTvShows)}
+        {renderSliderForTvShows(t("popularTvShows"), EXPLORE_POPULAR_TV_SHOWS, tvShows.getPopularTvShows)}
+        {renderSliderForMovies(t("topRatedMovies"), EXPLORE_TOP_RATED_MOVIES, movies.getTopRatedMovies)}
+        {renderSliderForMovies(t("popularMovies"), EXPLORE_POPULAR_MOVIES, movies.getPopularMovies)}
+        {renderSliderForMovies(t("upcomingMovies"), EXPLORE_UPCOMING_MOVIES, movies.getUpcomingMovies)}
       </List>
     </div>
   );

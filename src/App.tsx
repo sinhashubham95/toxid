@@ -36,6 +36,14 @@ import {
   BASIC_INFO,
   CONTENT,
   CONTENT_ROUTES,
+  EXPLORE,
+  EXPLORE_MOVIES,
+  EXPLORE_POPULAR_MOVIES,
+  EXPLORE_POPULAR_TV_SHOWS,
+  EXPLORE_TOP_RATED_MOVIES,
+  EXPLORE_TOP_RATED_TV_SHOWS,
+  EXPLORE_TV_SHOWS,
+  EXPLORE_UPCOMING_MOVIES,
   FORGOT_PASSWORD,
   HOME,
   MOVIES,
@@ -47,6 +55,13 @@ import { AuthInfo, AuthState } from './types/auth';
 import { SnackInfo, SnackState } from './types/common';
 import auth from './utils/auth';
 import authInfo from './recoil/atoms/auth/authInfo';
+import ContentTopRatedTvShows from './containers/ContentTopRatedTvShows';
+import ContentPopularTvShows from './containers/ContentPopularTvShows';
+import ContentExploreTvShows from './containers/ContentExploreTvShows';
+import ContentExploreMovies from './containers/ContentExploreMovies';
+import ContentTopRatedMovies from './containers/ContentTopRatedMovies';
+import ContentPopularMovies from './containers/ContentPopularMovies';
+import ContentUpcomingMovies from './containers/ContentUpcomingMovies';
 
 const theme = responsiveFontSizes(createTheme({
   palette: {
@@ -87,9 +102,11 @@ const App = () => {
   useEffect(() => auth.onAuthStateChange(onAuthStateChange), []);
 
   useEffect(() => {
-    if (location.pathname.startsWith(CONTENT) && !showAppBar) {
+    if ((location.pathname.startsWith(CONTENT) || location.pathname.startsWith(EXPLORE))
+      && !showAppBar) {
       setShowAppBar(true);
-    } else if (!location.pathname.startsWith(CONTENT) && showAppBar) {
+    } else if (!(location.pathname.startsWith(CONTENT) || location.pathname.startsWith(EXPLORE))
+      && showAppBar) {
       setShowAppBar(false);
     }
   }, [location, showAppBar]);
@@ -177,8 +194,15 @@ const App = () => {
         <Route path={FORGOT_PASSWORD} component={getWrappedComponent(AuthResetEmailPassword)} />
         <Route path={`${BASIC_INFO}/:init`} component={getWrappedComponent(AuthUserInfo)} />
         <Route path={HOME} component={getWrappedComponent(ContentHome)} />
-        <Route path={MOVIES} component={getWrappedComponent(ContentMovies)} />
         <Route path={TV} component={getWrappedComponent(ContentTvShows)} />
+        <Route path={`${EXPLORE_TV_SHOWS}/:id/:title`} component={getWrappedComponent(ContentExploreTvShows)} />
+        <Route path={EXPLORE_TOP_RATED_TV_SHOWS} component={getWrappedComponent(ContentTopRatedTvShows)} />
+        <Route path={EXPLORE_POPULAR_TV_SHOWS} component={getWrappedComponent(ContentPopularTvShows)} />
+        <Route path={MOVIES} component={getWrappedComponent(ContentMovies)} />
+        <Route path={`${EXPLORE_MOVIES}/:id/:title`} component={getWrappedComponent(ContentExploreMovies)} />
+        <Route path={EXPLORE_TOP_RATED_MOVIES} component={getWrappedComponent(ContentTopRatedMovies)} />
+        <Route path={EXPLORE_POPULAR_MOVIES} component={getWrappedComponent(ContentPopularMovies)} />
+        <Route path={EXPLORE_UPCOMING_MOVIES} component={getWrappedComponent(ContentUpcomingMovies)} />
       </Switch>
     </main>
   );

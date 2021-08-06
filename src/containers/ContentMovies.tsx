@@ -1,3 +1,4 @@
+import { EXPLORE_MOVIES } from '../constants/routes';
 import { Genres, Genre } from '../types/genres';
 import { Movie } from '../types/movies';
 import genres from '../utils/genres';
@@ -9,6 +10,7 @@ import withSlider from './hoc/withSlider';
 const ContentMovies = withList<Genre, Genres>(
   withSlider<Genre, Movie>(
     Movies,
+    (genre?: Genre) => `${EXPLORE_MOVIES}/${genre?.id}/${genre?.title}`,
     (genre?: Genre) => genre?.title,
     (item: Movie) => item.id,
     movies.getAllMovies,

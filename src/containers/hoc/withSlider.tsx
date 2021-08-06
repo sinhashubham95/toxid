@@ -1,5 +1,6 @@
 import { createRef, useEffect, useState, FunctionComponent } from "react";
 import Slider from "react-slick";
+import { useHistory } from "react-router-dom";
 import { useTranslation } from "react-i18next";
 import clsx from 'clsx';
 import {
@@ -20,6 +21,7 @@ const withSlider = <S, T,>(
     data: T,
     popover: boolean,
   }>,
+  location: string | ((param?: S) => string),
   getTitle: (param?: S) => string | undefined,
   getKey: (item: T) => number,
   fetcher: (param?: S, pageNumber?: number) => Promise<PaginatedResponse<T>>,
@@ -35,6 +37,8 @@ const withSlider = <S, T,>(
     // handling media
     const theme = useTheme();
     const belowSm = useMediaQuery(theme.breakpoints.down('sm'));
+
+    const history = useHistory();
 
     const { t } = useTranslation();
 
@@ -96,7 +100,8 @@ const withSlider = <S, T,>(
     const renderTitle = () => (
       <ButtonBase
         className={classes.titleButton}
-        onClick={() => { }}
+        onClick={() => (typeof location === 'string' ?
+          history.replace(location) : history.replace(location(param)))}
         focusVisibleClassName={classes.focusVisibleTitleButton}
       >
         <Typography component="h5" variant="h6" className={classes.title}>
