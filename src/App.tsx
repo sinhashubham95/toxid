@@ -13,6 +13,7 @@ import {
   Snackbar,
   Typography,
   ButtonBase,
+  useMediaQuery,
 } from "@material-ui/core";
 import { Alert } from '@material-ui/lab';
 import {
@@ -30,6 +31,7 @@ import ContentHome from './containers/ContentHome';
 import ContentMovies from "./containers/ContentMovies";
 import ContentTvShows from "./containers/ContentTvShows";
 import Profile from './containers/Profile';
+import Browse from './containers/Browse';
 import {
   BASIC_INFO,
   CONTENT,
@@ -59,6 +61,9 @@ const theme = responsiveFontSizes(createTheme({
 
 const App = () => {
   const classes = useStyles();
+
+  // handling media
+  const belowSm = useMediaQuery(theme.breakpoints.down('sm'));
 
   const { t } = useTranslation();
   const history = useHistory();
@@ -119,12 +124,17 @@ const App = () => {
     </div>
   );
 
+  const renderVerticalNav = () => (
+    <Browse />
+  );
+
   const renderLeftAppBar = () => (
     <div className={classes.leftAppBar}>
       <Typography variant="h4" color="secondary" className={classes.title}>
         {t("title")}
       </Typography>
-      {renderNav()}
+      {!belowSm && renderNav()}
+      {belowSm && renderVerticalNav()}
     </div>
   );
 

@@ -1,6 +1,6 @@
 import { createRef, useEffect, useState, FunctionComponent } from "react";
 import Slider from "react-slick";
-import { makeStyles, Typography, IconButton } from "@material-ui/core";
+import { makeStyles, Typography, IconButton, useTheme, useMediaQuery } from "@material-ui/core";
 import ChevronLeft from "@material-ui/icons/ChevronLeft";
 import ChevronRight from "@material-ui/icons/ChevronRight";
 import { PaginatedData, PaginatedResponse } from "../../types/common";
@@ -20,6 +20,10 @@ const withSlider = <S, T,>(
   showErrorMessage: (message: string) => void,
 }) => {
     const classes = useStyles();
+
+    // handling media
+    const theme = useTheme();
+    const belowSm = useMediaQuery(theme.breakpoints.down('sm'));
 
     const slider = createRef<Slider>();
 
@@ -92,22 +96,27 @@ const withSlider = <S, T,>(
       />
     );
 
+    const renderSlider = (slides: number) => (
+      <Slider
+        ref={slider}
+        className={classes.slider}
+        infinite={false}
+        lazyLoad="progressive"
+        slidesToShow={slides}
+        slidesToScroll={slides}
+        afterChange={onSliderChange}
+      >
+        {data.data.map(renderCard)}
+      </Slider>
+    );
+
     return (
       <div className={classes.root}>
         <Typography component="h5" variant="h6" className={classes.title}>{getTitle(param)}</Typography>
         <div className={classes.page}>
           {renderPreviousArrow()}
-          <Slider
-            ref={slider}
-            className={classes.slider}
-            infinite={false}
-            lazyLoad="progressive"
-            slidesToShow={5}
-            slidesToScroll={5}
-            afterChange={onSliderChange}
-          >
-            {data.data.map(renderCard)}
-          </Slider>
+          {belowSm && renderSlider(2)}
+          {!belowSm && renderSlider(5)}
           {renderNextArrow()}
         </div>
       </div>
@@ -125,7 +134,7 @@ const useStyles = makeStyles((theme) => ({
     marginBottom: theme.spacing(4),
   },
   title: {
-    margin: theme.spacing(0, 10, 1)
+    margin: theme.spacing(1, 10, 0)
   },
   page: {
     display: 'flex',

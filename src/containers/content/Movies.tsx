@@ -112,17 +112,29 @@ const useStyles = makeStyles((theme) => ({
   card: {
     margin: theme.spacing(0, 2, 0),
     maxWidth: theme.spacing(50),
-    height: theme.spacing(30),
+    height: theme.spacing(40),
+    [theme.breakpoints.down('md')]: {
+      height: theme.spacing(30),
+    },
+    [theme.breakpoints.down('sm')]: {
+      height: theme.spacing(20),
+    },
   },
   media: {
-    height: theme.spacing(30),
+    height: theme.spacing(40),
+    [theme.breakpoints.down('md')]: {
+      height: theme.spacing(30),
+    },
+    [theme.breakpoints.down('sm')]: {
+      height: theme.spacing(20),
+    },
     objectFit: 'contain',
   },
   popover: {
     pointerEvents: 'none',
   },
   detailedCard: {
-    minHeight: theme.spacing(50),
+    minHeight: theme.spacing(30),
     width: theme.spacing(60),
   },
   detailedMedia: {
