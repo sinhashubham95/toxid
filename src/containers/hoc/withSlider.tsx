@@ -36,6 +36,12 @@ const withSlider = <S, T,>(
       totalPages: 0,
     });
 
+    const [enter, setEnter] = useState(false);
+
+    const onEnter = () => setEnter(true);
+
+    const onLeave = () => setEnter(false);
+
     useEffect(() => {
       if (data.pagesFetched === 0) {
         // fetch the data for the first time, which is the first page
@@ -92,7 +98,13 @@ const withSlider = <S, T,>(
         <ChevronLeft
           // color="secondary"
           fontSize={belowSm ? "small" : "large"}
-          className={clsx(classes.button, classes.leftButton)}
+          className={
+            clsx(
+              classes.button,
+              classes.leftButton,
+              { [classes.hoverButton]: enter },
+            )
+          }
         />
       </ButtonBase>
     );
@@ -109,7 +121,13 @@ const withSlider = <S, T,>(
         <ChevronRight
           // color="secondary"
           fontSize={belowSm ? "small" : "large"}
-          className={clsx(classes.button, classes.rightButton)}
+          className={
+            clsx(
+              classes.button,
+              classes.rightButton,
+              { [classes.hoverButton]: enter },
+            )
+          }
         />
         <Component
           data={item}
@@ -161,7 +179,7 @@ const withSlider = <S, T,>(
     return (
       <div className={classes.root}>
         <Typography component="h5" variant="h6" className={classes.title}>{getTitle(param)}</Typography>
-        <div className={classes.page}>
+        <div className={classes.page} onMouseEnter={onEnter} onMouseLeave={onLeave}>
           {belowSm && renderSlider(2)}
           {!belowSm && renderSlider(5)}
         </div>
@@ -238,5 +256,8 @@ const useStyles = makeStyles((theme) => ({
   },
   rightButton: {
     left: theme.spacing(2),
+  },
+  hoverButton: {
+    opacity: 1,
   },
 }));
