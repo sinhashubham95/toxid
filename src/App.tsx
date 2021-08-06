@@ -10,10 +10,10 @@ import {
   AppBar,
   Toolbar,
   CssBaseline,
-  Button,
   Snackbar,
   Typography,
   ButtonBase,
+  useMediaQuery,
 } from "@material-ui/core";
 import { Alert } from '@material-ui/lab';
 import {
@@ -30,6 +30,8 @@ import AuthUserInfo from "./containers/AuthUserInfo";
 import ContentHome from './containers/ContentHome';
 import ContentMovies from "./containers/ContentMovies";
 import ContentTvShows from "./containers/ContentTvShows";
+import Profile from './containers/Profile';
+import Browse from './containers/Browse';
 import {
   BASIC_INFO,
   CONTENT,
@@ -60,6 +62,9 @@ const theme = responsiveFontSizes(createTheme({
 const App = () => {
   const classes = useStyles();
 
+  // handling media
+  const belowSm = useMediaQuery(theme.breakpoints.down('sm'));
+
   const { t } = useTranslation();
   const history = useHistory();
   const location = useLocation();
@@ -88,14 +93,6 @@ const App = () => {
       setShowAppBar(false);
     }
   }, [location, showAppBar]);
-
-  const onSignOut = async () => {
-    const error = await auth.signOut();
-    if (error) {
-      // show error message
-      showErrorMessage(error.message);
-    }
-  };
 
   const onCloseSnack = () => setSnack(null);
 
@@ -127,18 +124,34 @@ const App = () => {
     </div>
   );
 
+  const renderVerticalNav = () => (
+    <Browse />
+  );
+
+  const renderLeftAppBar = () => (
+    <div className={classes.leftAppBar}>
+      <Typography variant="h4" color="secondary" className={classes.title}>
+        {t("title")}
+      </Typography>
+      {!belowSm && renderNav()}
+      {belowSm && renderVerticalNav()}
+    </div>
+  );
+
+  const renderRightAppBar = () => (
+    <Profile
+      showSuccessMessage={showSuccessMessage}
+      showErrorMessage={showErrorMessage}
+    />
+  );
+
   const renderAppBar = () => (
     <Fragment>
       <CssBaseline />
       <AppBar position="fixed">
         <Toolbar className={classes.appBar}>
-          <div className={classes.leftAppBar}>
-            <Typography variant="h4" color="secondary" className={classes.title}>
-              {t("title")}
-            </Typography>
-            {renderNav()}
-          </div>
-          <Button color="secondary" onClick={onSignOut}>{t("signOut")}</Button>
+          {renderLeftAppBar()}
+          {renderRightAppBar()}
         </Toolbar>
       </AppBar>
       <div className={classes.toolbar} />
@@ -212,7 +225,7 @@ const useStyles = makeStyles((theme) => ({
     margin: theme.spacing(0, 2, 0),
     '&:hover, &$focusNavButton': {
       zIndex: 1,
-      '& $navButtonTitle': {
+      '&$navButtonTitle': {
         opacity: 0.6,
       },
     },
@@ -223,7 +236,7 @@ const useStyles = makeStyles((theme) => ({
     padding: theme.spacing(1),
   },
   title: {
-    margin: theme.spacing(0, 6, 0),
+    marginRight: theme.spacing(3),
     fontFamily: 'Roboto',
   },
   hide: {

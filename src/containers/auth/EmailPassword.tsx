@@ -14,6 +14,8 @@ import {
   InputLabel,
   OutlinedInput,
   IconButton,
+  useTheme,
+  useMediaQuery,
 } from '@material-ui/core';
 import { LockOutlined, Visibility, VisibilityOff } from '@material-ui/icons';
 import { useState } from 'react';
@@ -32,6 +34,10 @@ const EmailPassword: FunctionComponent<AuthProps> = ({
   showErrorMessage,
 }) => {
   const classes = useStyles();
+
+  // handling media
+  const theme = useTheme();
+  const belowSm = useMediaQuery(theme.breakpoints.down('sm'));
 
   const history = useHistory();
   const { t } = useTranslation();
@@ -154,9 +160,15 @@ const EmailPassword: FunctionComponent<AuthProps> = ({
   );
 
   const renderExtrasGrid = () => (
-    <Grid container>
+    <Grid
+      container
+      direction={belowSm ? "column" : "row"}
+      justifyContent={belowSm ? "center" : "space-between"}
+      alignItems="center"
+      spacing={1}
+    >
       {extras.map(({ title, link }, index) => (
-        <Grid key={title} item xs={index === 0}>
+        <Grid key={title} item>
           <Link
             variant="body2"
             onClick={() => history.replace(link)}
@@ -246,7 +258,7 @@ const useStyles = makeStyles(theme => ({
     margin: theme.spacing(3, 0, 2),
   },
   signInExtras: {
-    margin: theme.spacing(4, 0, 0),
+    margin: theme.spacing(2, 0, 0),
   },
   extraLink: {
     '&:hover': {

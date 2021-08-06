@@ -18,6 +18,13 @@ class Storage {
       };
     }
   };
+
+  getUrl = async (ref: string): Promise<string> => {
+    try {
+      return (await this.storage.ref(ref).getDownloadURL()) as string;
+    } catch (e) { }
+    return '';
+  };
 }
 
 export default new Storage();

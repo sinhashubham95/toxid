@@ -2,6 +2,7 @@ const ENTranslations = {
   title: "Toxid",
   signIn: "Sign In",
   signUp: "Sign Up",
+  manageAccount: "Manage Account",
   signOut: "Sign Out",
   resetPassword: "Reset Password",
   email: "Email Address",
@@ -28,6 +29,7 @@ const ENTranslations = {
   topRatedMovies: "Top-Rated Movies",
   popularMovies: "Popular Movies",
   upcomingMovies: "Upcoming Movies",
+  browse: "Browse"
 };
 
 export default ENTranslations;

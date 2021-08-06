@@ -4,7 +4,15 @@ import clsx from "clsx";
 import { ChangeEventHandler } from "react";
 import { ProfilePhotoProps } from "../types/common";
 
-const ProfilePhoto = ({ onFileChange, onClick, photoUrl, avatarStyle }: ProfilePhotoProps) => {
+const ProfilePhoto = ({
+  id,
+  onFileChange,
+  onClick,
+  onMouseEnter,
+  onMouseLeave,
+  photoUrl,
+  avatarStyle,
+}: ProfilePhotoProps) => {
   const classes = useStyles();
 
   const onInputChange: ChangeEventHandler<HTMLInputElement> = (event) => {
@@ -28,7 +36,13 @@ const ProfilePhoto = ({ onFileChange, onClick, photoUrl, avatarStyle }: ProfileP
   );
 
   return (
-    <div>
+    <div
+      aria-label="Profile Photo"
+      aria-controls={id}
+      aria-haspopup={id ? "true" : "false"}
+      onMouseEnter={onMouseEnter}
+      onMouseLeave={onMouseLeave}
+    >
       {onFileChange && renderInput()}
       <label htmlFor="profile-photo">
         <IconButton

@@ -1,5 +1,6 @@
 import firebase from 'firebase';
 import { parseFullName } from 'parse-full-name';
+import { PROFILE_PHOTO } from '../constants/constants';
 import { COUNTRIES } from '../constants/countries';
 import {
   AuthDetails,
@@ -10,6 +11,7 @@ import {
   Username,
   BasicInfo,
 } from '../types/auth';
+import storage from './storage';
 
 class Auth {
   private readonly auth = firebase.auth();
@@ -115,11 +117,9 @@ class Auth {
           await this.auth.currentUser?.updateEmail(info.email);
         }
         const fullName = this.getFullName(info.firstName, info.lastName);
-        if (this.auth.currentUser?.displayName !== fullName ||
-          this.auth.currentUser?.photoURL !== info.photoUrl) {
+        if (this.auth.currentUser?.displayName !== fullName) {
           await this.auth.currentUser?.updateProfile({
             displayName: fullName,
-            photoURL: info.photoUrl,
           });
         }
       }
@@ -172,7 +172,7 @@ class Auth {
             emailVerified: data.emailVerified,
             firstName: data.firstName,
             lastName: data.lastName,
-            photoUrl: data.photoUrl,
+            photoUrl: await storage.getUrl(`${userId}-${PROFILE_PHOTO}`),
             country: COUNTRIES[data.countryCode],
             phoneNumber: data.phoneNumber,
             phoneNumberVerified: data.phoneNumberVerified,

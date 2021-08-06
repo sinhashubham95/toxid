@@ -7,15 +7,23 @@ import {
   makeStyles,
   Popover,
   Typography,
+  useMediaQuery,
+  useTheme,
 } from "@material-ui/core";
 import { Movie } from "../../types/movies";
 
 const Movies = ({
   data,
+  popover,
 }: {
   data: Movie,
+  popover: boolean,
 }) => {
   const classes = useStyles();
+
+  // handling media
+  const theme = useTheme();
+  const belowSm = useMediaQuery(theme.breakpoints.down('sm'));
 
   const [cardAnchor, setCardAnchor] = useState<HTMLElement | null>(null);
 
@@ -26,7 +34,7 @@ const Movies = ({
 
   const renderBasicCard = () => (
     <Card
-      aria-owns={'card-popover'}
+      aria-owns="card-popover"
       aria-haspopup="true"
       className={classes.card}
       onMouseEnter={onCardEnter}
@@ -66,7 +74,7 @@ const Movies = ({
       className={classes.popover}
       open={!!cardAnchor}
       anchorEl={cardAnchor}
-      anchorOrigin={{
+      anchorOrigin={belowSm ? undefined : {
         vertical: 'center',
         horizontal: 'center',
       }}
@@ -84,7 +92,7 @@ const Movies = ({
   return (
     <div key={data.id}>
       {renderBasicCard()}
-      {cardAnchor && renderCardPopover()}
+      {popover && cardAnchor && renderCardPopover()}
     </div>
   );
 };
@@ -112,18 +120,33 @@ const useStyles = makeStyles((theme) => ({
   card: {
     margin: theme.spacing(0, 2, 0),
     maxWidth: theme.spacing(50),
-    height: theme.spacing(30),
+    height: theme.spacing(40),
+    [theme.breakpoints.down('md')]: {
+      height: theme.spacing(30),
+    },
+    [theme.breakpoints.down('sm')]: {
+      height: theme.spacing(20),
+    },
   },
   media: {
-    height: theme.spacing(30),
+    height: theme.spacing(40),
+    [theme.breakpoints.down('md')]: {
+      height: theme.spacing(30),
+    },
+    [theme.breakpoints.down('sm')]: {
+      height: theme.spacing(20),
+    },
     objectFit: 'contain',
   },
   popover: {
     pointerEvents: 'none',
   },
   detailedCard: {
-    minHeight: theme.spacing(50),
+    minHeight: theme.spacing(30),
     width: theme.spacing(60),
+    [theme.breakpoints.down('sm')]: {
+      width: theme.spacing(40),
+    },
   },
   detailedMedia: {
     height: theme.spacing(30),
