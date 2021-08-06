@@ -260,6 +260,7 @@ const useStyles = makeStyles((theme) => ({
     padding: theme.spacing(1),
   },
   title: {
+    marginLeft: theme.spacing(2),
     marginRight: theme.spacing(3),
     fontFamily: 'Roboto',
   },
