@@ -39,8 +39,8 @@ const withAuth = (
     <div>
       <Grid container component="main" className={classes.root}>
         <CssBaseline />
-        <Grid item xs={false} sm={4} md={7} className={classes.image} />
-        <Grid item xs={12} sm={8} md={5} elevation={6} square component={Paper}>
+        <Grid item sm={false} md={7} className={classes.image} />
+        <Grid item xs={12} sm={12} md={5} elevation={6} square component={Paper}>
           <Component
             title={title}
             method={method}
