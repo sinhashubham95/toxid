@@ -28,8 +28,16 @@ import AuthSignUpEmailPassword from "./containers/AuthSignUpEmailPassword";
 import AuthResetEmailPassword from "./containers/AuthResetEmailPassword";
 import AuthUserInfo from "./containers/AuthUserInfo";
 import ContentHome from './containers/ContentHome';
-import ContentMovies from "./containers/ContentMovies";
 import ContentTvShows from "./containers/ContentTvShows";
+import ContentTvShowDetails from './containers/ContentTvShowDetails';
+import ContentTopRatedTvShows from './containers/ContentTopRatedTvShows';
+import ContentPopularTvShows from './containers/ContentPopularTvShows';
+import ContentExploreTvShows from './containers/ContentExploreTvShows';
+import ContentMovies from "./containers/ContentMovies";
+import ContentExploreMovies from './containers/ContentExploreMovies';
+import ContentTopRatedMovies from './containers/ContentTopRatedMovies';
+import ContentPopularMovies from './containers/ContentPopularMovies';
+import ContentUpcomingMovies from './containers/ContentUpcomingMovies';
 import Profile from './containers/Profile';
 import Browse from './containers/Browse';
 import {
@@ -50,18 +58,12 @@ import {
   SIGN_IN,
   SIGN_UP,
   TV,
+  TV_SHOW_DETAILS,
 } from './constants/routes';
 import { AuthInfo, AuthState } from './types/auth';
 import { SnackInfo, SnackState } from './types/common';
 import auth from './utils/auth';
 import authInfo from './recoil/atoms/auth/authInfo';
-import ContentTopRatedTvShows from './containers/ContentTopRatedTvShows';
-import ContentPopularTvShows from './containers/ContentPopularTvShows';
-import ContentExploreTvShows from './containers/ContentExploreTvShows';
-import ContentExploreMovies from './containers/ContentExploreMovies';
-import ContentTopRatedMovies from './containers/ContentTopRatedMovies';
-import ContentPopularMovies from './containers/ContentPopularMovies';
-import ContentUpcomingMovies from './containers/ContentUpcomingMovies';
 
 const theme = responsiveFontSizes(createTheme({
   palette: {
@@ -195,6 +197,7 @@ const App = () => {
         <Route path={`${BASIC_INFO}/:init`} component={getWrappedComponent(AuthUserInfo)} />
         <Route path={HOME} component={getWrappedComponent(ContentHome)} />
         <Route path={TV} component={getWrappedComponent(ContentTvShows)} />
+        <Route path={`${TV_SHOW_DETAILS}/:id`} component={getWrappedComponent(ContentTvShowDetails)} />
         <Route path={`${EXPLORE_TV_SHOWS}/:id/:title`} component={getWrappedComponent(ContentExploreTvShows)} />
         <Route path={EXPLORE_TOP_RATED_TV_SHOWS} component={getWrappedComponent(ContentTopRatedTvShows)} />
         <Route path={EXPLORE_POPULAR_TV_SHOWS} component={getWrappedComponent(ContentPopularTvShows)} />

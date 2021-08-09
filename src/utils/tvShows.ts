@@ -1,9 +1,9 @@
 import Axios from "axios";
 import Env from "./env";
-import { GET_ALL_TV_SHOWS_PATH, GET_POPULAR_TV_SHOWS_PATH, GET_TOP_RATED_TV_SHOWS_PATH } from "../constants/api";
+import { GET_ALL_TV_SHOWS_PATH, GET_POPULAR_TV_SHOWS_PATH, GET_TOP_RATED_TV_SHOWS_PATH, GET_TV_SHOW_DETAIL_PATH } from "../constants/api";
 import { Genre } from "../types/genres";
 import { PaginatedResponse } from "../types/common";
-import { TvShowsResponse, TvShow } from "../types/tvShows";
+import { TvShowsResponse, TvShow, TvShowDetails, TvShowDetailsResponse, VideoDetail, VideoSite } from "../types/tvShows";
 
 class TvShows {
   private readonly axios = Axios.create({
@@ -24,6 +24,39 @@ class TvShows {
   getPopularTvShows = async (genre?: Genre, pageNumber?: number): Promise<PaginatedResponse<TvShow>> =>
     this.getTvShows(`${GET_POPULAR_TV_SHOWS_PATH}?page=${pageNumber}`);
 
+  getTvhowDetails = async (id: number): Promise<TvShowDetails> => {
+    try {
+      const { status, data } = await this.axios.get(`${GET_TV_SHOW_DETAIL_PATH}/${id}?append_to_response=credits,videos`);
+      if (status === 200) {
+        const response = data as TvShowDetailsResponse;
+        return {
+          data: {
+            id: response.id,
+            title: response.name,
+            description: response.overview,
+            backdropImageUrl: this.getBackdropImageUrl(null, response.backdrop_path),
+            releaseDate: response.first_air_date,
+            genres: response.genres.map<Genre>(({ id, name }) => ({ id, title: name })),
+            videos: response.videos.results.map<VideoDetail>(({
+              id, name, site, type, key
+            }) => ({
+              id,
+              name,
+              url: this.getVideoUrl(site, key),
+            })),
+
+          },
+        };
+      }
+    } catch (e) {
+      return {
+        error: {
+          message: e.message,
+        },
+      };
+    }
+  };
+
   private getImageUrl = (posterPath: string | null, backdropPath: string | null): string => {
     if (posterPath) {
       return `${Env.getTMDBImageApiBaseUrl()}${posterPath}`;
@@ -43,6 +76,8 @@ class TvShows {
     }
     return '';
   };
+
+  private getVideoUrl = (site: VideoSite, key: string): string => key;
 
   private getTvShowsResponse = (tvShows: TvShowsResponse): PaginatedResponse<TvShow> => ({
     pageNumber: tvShows.page,
@@ -82,7 +117,6 @@ class TvShows {
       const { status, data } = await this.axios.get(url);
       if (status === 200) {
         return this.getTvShowsResponse(data as TvShowsResponse);
-
       }
       return this.getError(data.status_message);
     } catch (e) {

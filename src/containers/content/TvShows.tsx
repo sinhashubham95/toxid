@@ -59,7 +59,7 @@ const TvShows = ({
   );
 
   const renderDetailedCard = () => (
-    <Card className={classes.detailedCard}>
+    <Card className={classes.detailedCard} onMouseLeave={onCardLeave}>
       <CardActionArea>
         <CardMedia
           image={data.backdropImageUrl}
@@ -148,7 +148,7 @@ const useStyles = makeStyles((theme) => ({
     objectFit: 'contain',
   },
   popover: {
-    pointerEvents: 'none',
+    pointerEvents: 'auto',
   },
   detailedCard: {
     minHeight: theme.spacing(30),
