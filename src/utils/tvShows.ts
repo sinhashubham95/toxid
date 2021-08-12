@@ -8,8 +8,19 @@ import {
 } from "../constants/api";
 import { Genre } from "../types/genres";
 import { PaginatedResponse } from "../types/common";
-import { TvShowsResponse, TvShow, TvShowDetails, TvShowDetailsResponse, VideoDetail, VideoSite, SeasonDetail, CastDetail } from "../types/tvShows";
-import { EN, GB, IN, OFFICIAL_TRAILER } from "../constants/constants";
+import {
+  TvShowsResponse,
+  TvShow,
+  TvShowDetails,
+  TvShowDetailsResponse,
+  VideoDetail,
+  VideoSite,
+  SeasonDetail,
+  CastDetail,
+  CreatorDetail,
+  VideoType,
+} from "../types/tvShows";
+import { EN, GB, IN } from "../constants/constants";
 
 class TvShows {
   private readonly axios = Axios.create({
@@ -160,19 +171,27 @@ class TvShows {
 
   private getVideoDetails = (tvShowDetails: TvShowDetailsResponse): Array<VideoDetail> => {
     const videoDetails = tvShowDetails.videos.results.map<VideoDetail>(({
-      id, name, site, key
+      id, name, type, site, key
     }) => ({
       id,
       name,
+      type,
       url: this.getVideoUrl(site, key),
     }));
-    const trailer = videoDetails.find((video) => video.name === OFFICIAL_TRAILER);
+    const trailer = videoDetails.find((video) => video.type === VideoType.Trailer);
     if (trailer) {
       // move trailer to the top
-      return [trailer, ...videoDetails.filter((video) => video.name !== OFFICIAL_TRAILER)];
+      return [trailer, ...videoDetails.filter((video) => video.type !== VideoType.Trailer)];
     }
     // otherwise don't have to do anything
     return videoDetails;
+  };
+
+  private getTypedRating = (value: string): any => {
+    try {
+      return JSON.parse(value);
+    } catch (e) {}
+    return value;
   };
 
   private getContentRating = (tvShowDetails: TvShowDetailsResponse): string => {
@@ -184,7 +203,7 @@ class TvShows {
     }
     // otherwise just get the first one which is a age
     const filtered = tvShowDetails.content_ratings.results.filter((rating) =>
-      typeof JSON.parse(rating.rating) === 'number');
+      typeof this.getTypedRating(rating.rating) === 'number');
     if (filtered.length > 0) {
       // then it means we have at least 1 entry
       return `${filtered[0].rating}+`;
@@ -213,8 +232,11 @@ class TvShows {
       id: tvShowDetails.id,
       title: tvShowDetails.name,
       description: tvShowDetails.overview,
-      backdropImageUrl: this.getBackdropImageUrl(null, tvShowDetails.backdrop_path),
+      imageUrl: this.getImageUrl(tvShowDetails.poster_path, tvShowDetails.backdrop_path),
+      backdropImageUrl: this.getBackdropImageUrl(tvShowDetails.poster_path, tvShowDetails.backdrop_path),
       releaseDate: tvShowDetails.first_air_date,
+      creators: tvShowDetails.created_by.map<CreatorDetail>(({ id, name, profile_path }) =>
+        ({ id, name, imageUrl: this.getImageUrl(profile_path, null)})),
       genres: tvShowDetails.genres.map<Genre>(({ id, name }) => ({ id, title: name })),
       videos: this.getVideoDetails(tvShowDetails),
       rating: tvShowDetails.vote_average,

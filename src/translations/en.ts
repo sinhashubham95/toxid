@@ -35,6 +35,8 @@ const ENTranslations = {
   seasons: "Seasons",
   cast: "Cast",
   genres: "Genres",
+  creators: "Creators",
+  more: "more",
 };
 
 export default ENTranslations;

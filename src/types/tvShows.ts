@@ -26,6 +26,12 @@ export interface TvShowsResponse {
   }>
 };
 
+export interface CreatorDetail {
+  id: number;
+  name: string;
+  imageUrl: string;
+};
+
 export enum VideoSite {
   YouTube = "YouTube",
   Vimeo = "Vimeo",
@@ -41,6 +47,7 @@ export enum VideoType {
 export interface VideoDetail {
   id: string;
   name: string;
+  type: string;
   url: string;
 };
 
@@ -65,8 +72,10 @@ export interface TvShowDetailsData {
   id: number;
   title: string;
   description: string;
+  imageUrl: string | null;
   backdropImageUrl: string | null;
   releaseDate: string;
+  creators: Array<CreatorDetail>;
   genres: Array<Genre>;
   videos: Array<VideoDetail>;
   rating: number;
@@ -84,8 +93,14 @@ export interface TvShowDetailsResponse {
   id: number;
   name: string;
   overview: string;
+  poster_path: string | null;
   backdrop_path: string | null;
   first_air_date: string;
+  created_by: Array<{
+    id: number;
+    name: string;
+    profile_path: string | null;
+  }>;
   genres: Array<{
     id: number;
     name: string;

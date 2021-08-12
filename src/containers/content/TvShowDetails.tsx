@@ -10,6 +10,14 @@ import {
   Box,
   useTheme,
   useMediaQuery,
+  Link,
+  Dialog,
+  DialogTitle,
+  DialogContent,
+  List,
+  ListSubheader,
+  ListItem,
+  ListItemText,
 } from "@material-ui/core";
 import Rating from "@material-ui/lab/Rating";
 import { CommonProps } from "../../types/common";
@@ -28,6 +36,8 @@ const TvShowDetails = ({ showErrorMessage }: CommonProps) => {
   const { id } = useParams<{ id: string }>();
 
   const [data, setData] = useState<TvShowDetailsData | null>(null);
+
+  const [showCast, setShowCast] = useState(false);
 
   useEffect(() => {
     (async () => {
@@ -50,12 +60,19 @@ const TvShowDetails = ({ showErrorMessage }: CommonProps) => {
     </div>
   );
 
+  const renderPoster = (url: string) => (
+    <div
+      className={classes.trailer}
+      style={{ backgroundImage: `url(${url})` }}
+    />
+  );
+
   const renderLogo = (logo: string) => (
     <Box
       className={classes.logo}
       component="div"
       style={{ backgroundImage: `url(${logo})` }}
-      display={{ xs: "none", sm: "none", md: "block" }}
+      display={{ xs: "none", sm: "none", md: "flex" }}
     />
   );
 
@@ -127,11 +144,25 @@ const TvShowDetails = ({ showErrorMessage }: CommonProps) => {
           return current + ", " + name;
         }
         if (index === 4) {
-          return current + ", ...";
+          return current + "... ";
         }
         return current;
       }, "")}
+      {tvShow.cast.length > 4 && (
+        <Link
+          component="button"
+          variant="body2"
+          color="textPrimary"
+          onClick={() => setShowCast(true)}
+        >
+          {t("more")}
+        </Link>
+      )}
     </Typography>
+  );
+
+  const renderRightDetailsCast = (tvShow: TvShowDetailsData) => (
+    <Grid item>{renderCastNames(tvShow)}</Grid>
   );
 
   const renderGenreNames = (tvShow: TvShowDetailsData) => (
@@ -141,30 +172,37 @@ const TvShowDetails = ({ showErrorMessage }: CommonProps) => {
         if (index === 0) {
           return title;
         }
-        if (index <= 3) {
-          return current + ", " + title;
-        }
-        if (index === 4) {
-          return current + ", ...";
-        }
-        return current;
+        return current + ", " + title;
       }, "")}
     </Typography>
-  );
-
-  const renderRightDetailsCast = (tvShow: TvShowDetailsData) => (
-    <Grid item>{renderCastNames(tvShow)}</Grid>
   );
 
   const renderRightDetailsGenres = (tvShow: TvShowDetailsData) => (
     <Grid item>{renderGenreNames(tvShow)}</Grid>
   );
 
+  const renderCreatorNames = (tvShow: TvShowDetailsData) => (
+    <Typography variant="body2">
+      <Typography variant="caption">{t("creators")}: </Typography>
+      {tvShow.creators.reduce<string>((current, { name }, index) => {
+        if (index === 0) {
+          return name;
+        }
+        return current + ", " + name;
+      }, "")}
+    </Typography>
+  );
+
+  const renderRightDetailsCreators = (tvShow: TvShowDetailsData) => (
+    <Grid item>{renderCreatorNames(tvShow)}</Grid>
+  );
+
   const renderRightDetails = (tvShow: TvShowDetailsData) => (
     <Grid item xs={10} sm={11} md={4}>
       <Grid container direction="column" spacing={1}>
-        {renderRightDetailsCast(tvShow)}
-        {renderRightDetailsGenres(tvShow)}
+        {!!tvShow.cast.length && renderRightDetailsCast(tvShow)}
+        {!!tvShow.genres.length && renderRightDetailsGenres(tvShow)}
+        {!!tvShow.creators.length && renderRightDetailsCreators(tvShow)}
       </Grid>
     </Grid>
   );
@@ -176,12 +214,67 @@ const TvShowDetails = ({ showErrorMessage }: CommonProps) => {
     </Grid>
   );
 
+  const renderDetailedCastList = (tvShow: TvShowDetailsData) => (
+    <List
+      aria-labelledby="cast"
+      subheader={<ListSubheader id="cast">{t("cast")}</ListSubheader>}
+    >
+      {tvShow.cast.map(({ id, name }) => (
+        <ListItem key={id}>
+          <ListItemText>{name}</ListItemText>
+        </ListItem>
+      ))}
+    </List>
+  );
+
+  const renderDetailedGenresList = (tvShow: TvShowDetailsData) => (
+    <List subheader={<ListSubheader>{t("genres")}</ListSubheader>}>
+      {tvShow.genres.map(({ id, title }) => (
+        <ListItem key={id}>
+          <ListItemText>{title}</ListItemText>
+        </ListItem>
+      ))}
+    </List>
+  );
+
+  const renderDetailedCreatorsList = (tvShow: TvShowDetailsData) => (
+    <List subheader={<ListSubheader>{t("creators")}</ListSubheader>}>
+      {tvShow.creators.map(({ id, name }) => (
+        <ListItem key={id}>
+          <ListItemText>{name}</ListItemText>
+        </ListItem>
+      ))}
+    </List>
+  );
+
+  const renderDetailedCast = (tvShow: TvShowDetailsData) => (
+    <Dialog
+      open={showCast}
+      keepMounted
+      aria-labelledby="detailed-show"
+      maxWidth="xs"
+      scroll="paper"
+      onClose={() => setShowCast(false)}
+    >
+      <DialogTitle id="detailed-show">{tvShow.title}</DialogTitle>
+      <DialogContent dividers>
+        {renderDetailedCastList(tvShow)}
+        {renderDetailedGenresList(tvShow)}
+        {renderDetailedCreatorsList(tvShow)}
+      </DialogContent>
+    </Dialog>
+  );
+
   return (
     <div className={classes.root}>
-      {data?.videos?.length && renderTrailer(data.videos[0])}
+      {!!data?.videos?.length && renderTrailer(data.videos[0])}
+      {!data?.videos?.length &&
+        data?.backdropImageUrl &&
+        renderPoster(data.backdropImageUrl)}
       {data?.logo && renderLogo(data.logo)}
       {data?.title && renderTitle(data.title)}
       {data && renderDetails(data)}
+      {!!data?.cast?.length && renderDetailedCast(data)}
     </div>
   );
 };
@@ -196,6 +289,9 @@ const useStyles = makeStyles((theme) => ({
   trailer: {
     width: "100%",
     height: "80vh",
+    backgroundRepeat: "no-repeat",
+    backgroundSize: "contain",
+    backgroundPosition: "center",
     [theme.breakpoints.only("xs")]: {
       height: "40vh",
     },
@@ -209,9 +305,12 @@ const useStyles = makeStyles((theme) => ({
     backgroundRepeat: "no-repeat",
     backgroundSize: "contain",
     backgroundPosition: "center",
+    flexDirection: "row",
+    justifyContent: "center",
+    alignItems: "center",
     position: "absolute",
-    top: theme.spacing(10),
-    left: theme.spacing(2),
+    top: theme.spacing(45),
+    right: theme.spacing(2),
   },
   title: {
     margin: theme.spacing(2, 3, 0),
