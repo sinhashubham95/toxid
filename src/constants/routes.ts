@@ -16,6 +16,8 @@ export const HOME = `${CONTENT}/home`;
 
 export const TV = `${CONTENT}/tv`;
 
+export const TV_SHOW_DETAILS = `${CONTENT}/tv/details`;
+
 export const EXPLORE_TOP_RATED_TV_SHOWS = `${EXPLORE}/tv/top-rated`;
 
 export const EXPLORE_POPULAR_TV_SHOWS = `${EXPLORE}/tv/popular`;
@@ -23,6 +25,8 @@ export const EXPLORE_POPULAR_TV_SHOWS = `${EXPLORE}/tv/popular`;
 export const EXPLORE_TV_SHOWS = `${EXPLORE}/tv/all`;
 
 export const MOVIES = `${CONTENT}/movies`;
+
+export const MOVIE_DETAILS = `${CONTENT}/movie/details`;
 
 export const EXPLORE_TOP_RATED_MOVIES = `${EXPLORE}/movies/top-rated`;
 

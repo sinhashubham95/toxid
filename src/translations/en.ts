@@ -31,6 +31,12 @@ const ENTranslations = {
   upcomingMovies: "Upcoming Movies",
   browse: "Browse",
   explore: "Explore All",
+  season: "Season",
+  seasons: "Seasons",
+  cast: "Cast",
+  genres: "Genres",
+  creators: "Creators",
+  more: "more",
 };
 
 export default ENTranslations;

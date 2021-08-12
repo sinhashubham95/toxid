@@ -13,25 +13,24 @@ import {
 import { Movie } from "../../types/movies";
 import { POPOVER_DELAY_MILLIS } from "../../constants/constants";
 
-const Movies = ({
-  data,
-  popover,
-}: {
-  data: Movie,
-  popover: boolean,
-}) => {
+const Movies = ({ data, popover }: { data: Movie; popover: boolean }) => {
   const classes = useStyles();
 
   // handling media
   const theme = useTheme();
-  const belowSm = useMediaQuery(theme.breakpoints.down('sm'));
+  const belowSm = useMediaQuery(theme.breakpoints.down("sm"));
 
   const [cardTimeout, setCardTimeout] = useState<number>(0);
   const [cardAnchor, setCardAnchor] = useState<HTMLElement | null>(null);
 
   const onCardEnter = (event: MouseEvent<HTMLDivElement>) =>
-    setCardTimeout(setTimeout((target: HTMLElement) => setCardAnchor(target),
-      POPOVER_DELAY_MILLIS, event.currentTarget));
+    setCardTimeout(
+      setTimeout(
+        (target: HTMLElement) => setCardAnchor(target),
+        POPOVER_DELAY_MILLIS,
+        event.currentTarget
+      )
+    );
 
   const onCardLeave = () => {
     if (cardTimeout) {
@@ -47,19 +46,15 @@ const Movies = ({
       aria-haspopup="true"
       className={classes.card}
       onMouseEnter={onCardEnter}
-      onMouseLeave={onCardLeave}
     >
       <CardActionArea>
-        <CardMedia
-          image={data.imageUrl}
-          className={classes.media}
-        />
+        <CardMedia image={data.imageUrl} className={classes.media} />
       </CardActionArea>
     </Card>
   );
 
   const renderDetailedCard = () => (
-    <Card className={classes.detailedCard}>
+    <Card className={classes.detailedCard} onMouseLeave={onCardLeave}>
       <CardActionArea>
         <CardMedia
           image={data.backdropImageUrl}
@@ -83,13 +78,17 @@ const Movies = ({
       className={classes.popover}
       open={!!cardAnchor}
       anchorEl={cardAnchor}
-      anchorOrigin={belowSm ? undefined : {
-        vertical: 'center',
-        horizontal: 'center',
-      }}
+      anchorOrigin={
+        belowSm
+          ? undefined
+          : {
+              vertical: "center",
+              horizontal: "center",
+            }
+      }
       transformOrigin={{
-        vertical: 'center',
-        horizontal: 'center',
+        vertical: "center",
+        horizontal: "center",
       }}
       onClose={onCardLeave}
       disableRestoreFocus
@@ -108,52 +107,52 @@ const Movies = ({
 
 const useStyles = makeStyles((theme) => ({
   root: {
-    display: 'flex',
-    flexDirection: 'column',
-    justifyContent: 'flex-start',
-    width: '100%',
+    display: "flex",
+    flexDirection: "column",
+    justifyContent: "flex-start",
+    width: "100%",
     marginBottom: theme.spacing(4),
   },
   title: {
-    margin: theme.spacing(0, 10, 1)
+    margin: theme.spacing(0, 10, 1),
   },
   page: {
-    display: 'flex',
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'center',
+    display: "flex",
+    flexDirection: "row",
+    justifyContent: "space-between",
+    alignItems: "center",
   },
   slider: {
-    width: '92%',
+    width: "92%",
   },
   card: {
     margin: theme.spacing(0, 2, 0),
     maxWidth: theme.spacing(50),
     height: theme.spacing(40),
-    [theme.breakpoints.down('md')]: {
+    [theme.breakpoints.down("md")]: {
       height: theme.spacing(30),
     },
-    [theme.breakpoints.down('sm')]: {
+    [theme.breakpoints.down("sm")]: {
       height: theme.spacing(20),
     },
   },
   media: {
     height: theme.spacing(40),
-    [theme.breakpoints.down('md')]: {
+    [theme.breakpoints.down("md")]: {
       height: theme.spacing(30),
     },
-    [theme.breakpoints.down('sm')]: {
+    [theme.breakpoints.down("sm")]: {
       height: theme.spacing(20),
     },
-    objectFit: 'contain',
+    objectFit: "contain",
   },
   popover: {
-    pointerEvents: 'none',
+    pointerEvents: "auto",
   },
   detailedCard: {
     minHeight: theme.spacing(30),
     width: theme.spacing(60),
-    [theme.breakpoints.down('sm')]: {
+    [theme.breakpoints.down("sm")]: {
       width: theme.spacing(40),
     },
   },

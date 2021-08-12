@@ -1,4 +1,5 @@
 import { useState, MouseEvent } from "react";
+import { useHistory } from "react-router-dom";
 import {
   Card,
   CardActionArea,
@@ -12,6 +13,7 @@ import {
 } from "@material-ui/core";
 import { TvShow } from "../../types/tvShows";
 import { POPOVER_DELAY_MILLIS } from "../../constants/constants";
+import { TV_SHOW_DETAILS } from "../../constants/routes";
 
 const TvShows = ({
   data,
@@ -25,6 +27,8 @@ const TvShows = ({
   // handling media
   const theme = useTheme();
   const belowSm = useMediaQuery(theme.breakpoints.down('sm'));
+
+  const history = useHistory();
 
   const [cardTimeout, setCardTimeout] = useState<number>(0);
   const [cardAnchor, setCardAnchor] = useState<HTMLElement | null>(null);
@@ -47,7 +51,6 @@ const TvShows = ({
       aria-haspopup="true"
       className={classes.card}
       onMouseEnter={onCardEnter}
-      onMouseLeave={onCardLeave}
     >
       <CardActionArea>
         <CardMedia
@@ -59,7 +62,11 @@ const TvShows = ({
   );
 
   const renderDetailedCard = () => (
-    <Card className={classes.detailedCard}>
+    <Card
+      className={classes.detailedCard}
+      onClick={() => history.replace(`${TV_SHOW_DETAILS}/${data.id}`)}
+      onMouseLeave={onCardLeave}
+    >
       <CardActionArea>
         <CardMedia
           image={data.backdropImageUrl}
@@ -148,7 +155,7 @@ const useStyles = makeStyles((theme) => ({
     objectFit: 'contain',
   },
   popover: {
-    pointerEvents: 'none',
+    pointerEvents: 'auto',
   },
   detailedCard: {
     minHeight: theme.spacing(30),
