@@ -1,24 +1,18 @@
 class Env {
-  getTMDBApiBaseUrl = (): string => {
-    const url = process.env.REACT_APP_TMDB_API_BASE_URL;
-    if (typeof url === "string") {
-      return url;
-    }
-    return "";
-  };
+  getTMDBApiBaseUrl = (): string => this.get("REACT_APP_TMDB_API_BASE_URL");
 
-  getTMDBImageApiBaseUrl = (): string => {
-    const url = process.env.REACT_APP_TMDB_IMAGE_API_BASE_URL;
-    if (typeof url === "string") {
-      return url;
-    }
-    return "";
-  };
+  getTMDBImageApiBaseUrl = (): string => this.get("REACT_APP_TMDB_IMAGE_API_BASE_URL");
 
-  getTMDBApiKey = (): string => {
-    const key = process.env.REACT_APP_TMDB_API_KEY;
-    if (typeof key === "string") {
-      return key;
+  getTMDBApiKey = (): string => this.get("REACT_APP_TMDB_API_KEY");
+
+  getYouTubeBaseUrl = (): string => this.get("REACT_APP_YOUTUBE_BASE_URL");
+
+  getVimeoBaseUrl = (): string => this.get("REACT_APP_VIMEO_BASE_URL");
+
+  private get = (key: string): string => {
+    const value = process.env[key];
+    if (typeof value === "string") {
+      return value;
     }
     return "";
   };

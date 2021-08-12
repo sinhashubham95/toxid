@@ -31,6 +31,10 @@ const ENTranslations = {
   upcomingMovies: "Upcoming Movies",
   browse: "Browse",
   explore: "Explore All",
+  season: "Season",
+  seasons: "Seasons",
+  cast: "Cast",
+  genres: "Genres",
 };
 
 export default ENTranslations;

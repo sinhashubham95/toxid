@@ -195,13 +195,13 @@ const App = () => {
         <Route path={SIGN_UP} component={getWrappedComponent(AuthSignUpEmailPassword)} />
         <Route path={FORGOT_PASSWORD} component={getWrappedComponent(AuthResetEmailPassword)} />
         <Route path={`${BASIC_INFO}/:init`} component={getWrappedComponent(AuthUserInfo)} />
-        <Route path={HOME} component={getWrappedComponent(ContentHome)} />
-        <Route path={TV} component={getWrappedComponent(ContentTvShows)} />
+        <Route path={HOME} exact component={getWrappedComponent(ContentHome)} />
+        <Route path={TV} exact component={getWrappedComponent(ContentTvShows)} />
         <Route path={`${TV_SHOW_DETAILS}/:id`} component={getWrappedComponent(ContentTvShowDetails)} />
         <Route path={`${EXPLORE_TV_SHOWS}/:id/:title`} component={getWrappedComponent(ContentExploreTvShows)} />
         <Route path={EXPLORE_TOP_RATED_TV_SHOWS} component={getWrappedComponent(ContentTopRatedTvShows)} />
         <Route path={EXPLORE_POPULAR_TV_SHOWS} component={getWrappedComponent(ContentPopularTvShows)} />
-        <Route path={MOVIES} component={getWrappedComponent(ContentMovies)} />
+        <Route path={MOVIES} exact component={getWrappedComponent(ContentMovies)} />
         <Route path={`${EXPLORE_MOVIES}/:id/:title`} component={getWrappedComponent(ContentExploreMovies)} />
         <Route path={EXPLORE_TOP_RATED_MOVIES} component={getWrappedComponent(ContentTopRatedMovies)} />
         <Route path={EXPLORE_POPULAR_MOVIES} component={getWrappedComponent(ContentPopularMovies)} />

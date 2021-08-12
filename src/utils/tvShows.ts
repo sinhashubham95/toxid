@@ -1,9 +1,15 @@
 import Axios from "axios";
 import Env from "./env";
-import { GET_ALL_TV_SHOWS_PATH, GET_POPULAR_TV_SHOWS_PATH, GET_TOP_RATED_TV_SHOWS_PATH, GET_TV_SHOW_DETAIL_PATH } from "../constants/api";
+import {
+  GET_ALL_TV_SHOWS_PATH,
+  GET_POPULAR_TV_SHOWS_PATH,
+  GET_TOP_RATED_TV_SHOWS_PATH,
+  GET_TV_SHOW_DETAIL_PATH,
+} from "../constants/api";
 import { Genre } from "../types/genres";
 import { PaginatedResponse } from "../types/common";
-import { TvShowsResponse, TvShow, TvShowDetails, TvShowDetailsResponse, VideoDetail, VideoSite } from "../types/tvShows";
+import { TvShowsResponse, TvShow, TvShowDetails, TvShowDetailsResponse, VideoDetail, VideoSite, SeasonDetail, CastDetail } from "../types/tvShows";
+import { EN, GB, IN, OFFICIAL_TRAILER } from "../constants/constants";
 
 class TvShows {
   private readonly axios = Axios.create({
@@ -26,28 +32,17 @@ class TvShows {
 
   getTvhowDetails = async (id: number): Promise<TvShowDetails> => {
     try {
-      const { status, data } = await this.axios.get(`${GET_TV_SHOW_DETAIL_PATH}/${id}?append_to_response=credits,videos`);
+      const { status, data } = await this.axios.get(
+        `${GET_TV_SHOW_DETAIL_PATH}/${id}?append_to_response=aggregate_credits,videos,content_ratings,images`,
+      );
       if (status === 200) {
-        const response = data as TvShowDetailsResponse;
-        return {
-          data: {
-            id: response.id,
-            title: response.name,
-            description: response.overview,
-            backdropImageUrl: this.getBackdropImageUrl(null, response.backdrop_path),
-            releaseDate: response.first_air_date,
-            genres: response.genres.map<Genre>(({ id, name }) => ({ id, title: name })),
-            videos: response.videos.results.map<VideoDetail>(({
-              id, name, site, type, key
-            }) => ({
-              id,
-              name,
-              url: this.getVideoUrl(site, key),
-            })),
-
-          },
-        };
+        return this.getTvShowDetailsResponse(data as TvShowDetailsResponse);
       }
+      return {
+        error: {
+          message: data.status_message,
+        },
+      };
     } catch (e) {
       return {
         error: {
@@ -77,7 +72,14 @@ class TvShows {
     return '';
   };
 
-  private getVideoUrl = (site: VideoSite, key: string): string => key;
+  private getVideoUrl = (site: VideoSite, key: string): string => {
+    switch(site) {
+      case VideoSite.YouTube:
+        return `${Env.getYouTubeBaseUrl()}/watch?v=${key}`;
+      case VideoSite.Vimeo:
+        return `${Env.getVimeoBaseUrl()}/${key}`;
+    }
+  };
 
   private getTvShowsResponse = (tvShows: TvShowsResponse): PaginatedResponse<TvShow> => ({
     pageNumber: tvShows.page,
@@ -123,6 +125,105 @@ class TvShows {
       return this.getError(e.message);
     }
   }
+
+  private getCast = (tvShowDetails: TvShowDetailsResponse): Array<CastDetail> =>
+    tvShowDetails.aggregate_credits.cast.map<CastDetail>(({
+      id,
+      name,
+      character,
+      profile_path,
+      known_for_department,
+    }) => ({
+      id,
+      name,
+      character,
+      imageUrl: this.getImageUrl(profile_path, null),
+      knownFor: known_for_department,
+    }));
+
+  private getSeasonDetails = (tvShowDetails: TvShowDetailsResponse): Array<SeasonDetail> =>
+    tvShowDetails.seasons.map<SeasonDetail>(({
+      id,
+      season_number,
+      name,
+      overview,
+      episode_count,
+      poster_path,
+    }) => ({
+      id,
+      seasonNumber: season_number,
+      name,
+      description: overview,
+      episodeCount: episode_count,
+      imageUrl: this.getImageUrl(poster_path, null),
+    }));
+
+  private getVideoDetails = (tvShowDetails: TvShowDetailsResponse): Array<VideoDetail> => {
+    const videoDetails = tvShowDetails.videos.results.map<VideoDetail>(({
+      id, name, site, key
+    }) => ({
+      id,
+      name,
+      url: this.getVideoUrl(site, key),
+    }));
+    const trailer = videoDetails.find((video) => video.name === OFFICIAL_TRAILER);
+    if (trailer) {
+      // move trailer to the top
+      return [trailer, ...videoDetails.filter((video) => video.name !== OFFICIAL_TRAILER)];
+    }
+    // otherwise don't have to do anything
+    return videoDetails;
+  };
+
+  private getContentRating = (tvShowDetails: TvShowDetailsResponse): string => {
+    const rating = tvShowDetails.content_ratings.results.find((rating) =>
+      rating.iso_3166_1 === GB || rating.iso_3166_1 === IN);
+    if (rating) {
+      // found the required one
+      return `${rating.rating}+`;
+    }
+    // otherwise just get the first one which is a age
+    const filtered = tvShowDetails.content_ratings.results.filter((rating) =>
+      typeof JSON.parse(rating.rating) === 'number');
+    if (filtered.length > 0) {
+      // then it means we have at least 1 entry
+      return `${filtered[0].rating}+`;
+    }
+    if (tvShowDetails.content_ratings.results.length > 0) {
+      return tvShowDetails.content_ratings.results[0].rating;
+    }
+    return "";
+  };
+
+  private getLogo = (tvShowDetails: TvShowDetailsResponse): string => {
+    const logo = tvShowDetails.images.logos.find((image) => image.iso_639_1 === EN);
+    if (logo) {
+      // found the one
+      return this.getImageUrl(logo.file_path, null);
+    }
+    // otherwise just use the first one, if available
+    if (tvShowDetails.images.logos.length > 0) {
+      return this.getImageUrl(tvShowDetails.images.logos[0].file_path, null);
+    }
+    return "";
+  };
+
+  private getTvShowDetailsResponse = (tvShowDetails: TvShowDetailsResponse): TvShowDetails => ({
+    data: {
+      id: tvShowDetails.id,
+      title: tvShowDetails.name,
+      description: tvShowDetails.overview,
+      backdropImageUrl: this.getBackdropImageUrl(null, tvShowDetails.backdrop_path),
+      releaseDate: tvShowDetails.first_air_date,
+      genres: tvShowDetails.genres.map<Genre>(({ id, name }) => ({ id, title: name })),
+      videos: this.getVideoDetails(tvShowDetails),
+      rating: tvShowDetails.vote_average,
+      seasons: this.getSeasonDetails(tvShowDetails),
+      cast: this.getCast(tvShowDetails),
+      contentRating: this.getContentRating(tvShowDetails),
+      logo: this.getLogo(tvShowDetails),
+    },
+  });
 }
 
 export default new TvShows();

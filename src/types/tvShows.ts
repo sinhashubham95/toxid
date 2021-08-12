@@ -61,19 +61,23 @@ export interface CastDetail {
   knownFor: string;
 };
 
+export interface TvShowDetailsData {
+  id: number;
+  title: string;
+  description: string;
+  backdropImageUrl: string | null;
+  releaseDate: string;
+  genres: Array<Genre>;
+  videos: Array<VideoDetail>;
+  rating: number;
+  seasons: Array<SeasonDetail>;
+  cast: Array<CastDetail>;
+  contentRating: string;
+  logo: string;
+};
+
 export interface TvShowDetails extends ErrorResponse {
-  data?: {
-    id: number;
-    title: string;
-    description: string;
-    backdropImageUrl: string | null;
-    releaseDate: string;
-    genres: Array<Genre>;
-    videos: Array<VideoDetail>;
-    rating: number;
-    seasons: Array<SeasonDetail>;
-    cast: Array<CastDetail>;
-  },
+  data?: TvShowDetailsData,
 };
 
 export interface TvShowDetailsResponse {
@@ -105,13 +109,25 @@ export interface TvShowDetailsResponse {
     poster_path: string;
   }>;
   vote_average: number;
-  credits: {
+  aggregate_credits: {
     cast: Array<{
       id: number;
       name: string;
       character: string;
       profile_path: string;
       known_for_department: string;
+    }>;
+  };
+  content_ratings: {
+    results: Array<{
+      iso_3166_1: string;
+      rating: string;
+    }>;
+  };
+  images: {
+    logos: Array<{
+      iso_639_1: string;
+      file_path: string;
     }>;
   };
 };
