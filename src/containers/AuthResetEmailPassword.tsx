@@ -1,18 +1,18 @@
 import withAuth from "./hoc/withAuth";
-import ResetEmailPassword from './auth/ResetEmailPassword';
-import auth from '../utils/auth';
+import ResetEmailPassword from "./auth/ResetEmailPassword";
+import auth from "../utils/auth";
 
 const AuthResetEmailPassword = withAuth(
   ResetEmailPassword,
-  'resetPassword',
+  "resetPassword",
   auth.sendPasswordResetEmail,
   [
     {
-      title: 'signIn',
-      link: '/',
+      title: "signIn",
+      link: "/",
     },
   ],
-  [],
+  []
 );
 
 export default AuthResetEmailPassword;

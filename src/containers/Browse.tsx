@@ -2,7 +2,7 @@ import { Button, Menu, MenuItem } from "@material-ui/core";
 import { MouseEvent, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { useHistory } from "react-router-dom";
-import { CONTENT_ROUTES } from '../constants/routes';
+import { CONTENT_ROUTES } from "../constants/routes";
 
 const Browse = () => {
   const { t } = useTranslation();
@@ -10,7 +10,8 @@ const Browse = () => {
 
   const [anchor, setAnchor] = useState<HTMLElement | null>(null);
 
-  const onClick = (event: MouseEvent<HTMLButtonElement>) => setAnchor(event.currentTarget);
+  const onClick = (event: MouseEvent<HTMLButtonElement>) =>
+    setAnchor(event.currentTarget);
 
   const onClose = () => setAnchor(null);
 

@@ -18,6 +18,9 @@ import {
   ListSubheader,
   ListItem,
   ListItemText,
+  FormControl,
+  Select,
+  MenuItem,
 } from "@material-ui/core";
 import Rating from "@material-ui/lab/Rating";
 import { CommonProps } from "../../types/common";
@@ -36,8 +39,8 @@ const TvShowDetails = ({ showErrorMessage }: CommonProps) => {
   const { id } = useParams<{ id: string }>();
 
   const [data, setData] = useState<TvShowDetailsData | null>(null);
-
-  const [showCast, setShowCast] = useState(false);
+  const [showDetailed, setShowDetailed] = useState(false);
+  const [season, setSeason] = useState(0);
 
   useEffect(() => {
     (async () => {
@@ -153,7 +156,7 @@ const TvShowDetails = ({ showErrorMessage }: CommonProps) => {
           component="button"
           variant="body2"
           color="textPrimary"
-          onClick={() => setShowCast(true)}
+          onClick={() => setShowDetailed(true)}
         >
           {t("more")}
         </Link>
@@ -216,8 +219,8 @@ const TvShowDetails = ({ showErrorMessage }: CommonProps) => {
 
   const renderDetailedCastList = (tvShow: TvShowDetailsData) => (
     <List
-      aria-labelledby="cast"
-      subheader={<ListSubheader id="cast">{t("cast")}</ListSubheader>}
+      dense
+      subheader={<ListSubheader disableSticky>{t("cast")}</ListSubheader>}
     >
       {tvShow.cast.map(({ id, name }) => (
         <ListItem key={id}>
@@ -228,7 +231,10 @@ const TvShowDetails = ({ showErrorMessage }: CommonProps) => {
   );
 
   const renderDetailedGenresList = (tvShow: TvShowDetailsData) => (
-    <List subheader={<ListSubheader>{t("genres")}</ListSubheader>}>
+    <List
+      dense
+      subheader={<ListSubheader disableSticky>{t("genres")}</ListSubheader>}
+    >
       {tvShow.genres.map(({ id, title }) => (
         <ListItem key={id}>
           <ListItemText>{title}</ListItemText>
@@ -238,7 +244,10 @@ const TvShowDetails = ({ showErrorMessage }: CommonProps) => {
   );
 
   const renderDetailedCreatorsList = (tvShow: TvShowDetailsData) => (
-    <List subheader={<ListSubheader>{t("creators")}</ListSubheader>}>
+    <List
+      dense
+      subheader={<ListSubheader disableSticky>{t("creators")}</ListSubheader>}
+    >
       {tvShow.creators.map(({ id, name }) => (
         <ListItem key={id}>
           <ListItemText>{name}</ListItemText>
@@ -247,22 +256,54 @@ const TvShowDetails = ({ showErrorMessage }: CommonProps) => {
     </List>
   );
 
-  const renderDetailedCast = (tvShow: TvShowDetailsData) => (
+  const renderDetailed = (tvShow: TvShowDetailsData) => (
     <Dialog
-      open={showCast}
+      open={showDetailed}
       keepMounted
       aria-labelledby="detailed-show"
       maxWidth="xs"
       scroll="paper"
-      onClose={() => setShowCast(false)}
+      onClose={() => setShowDetailed(false)}
     >
       <DialogTitle id="detailed-show">{tvShow.title}</DialogTitle>
       <DialogContent dividers>
-        {renderDetailedCastList(tvShow)}
-        {renderDetailedGenresList(tvShow)}
-        {renderDetailedCreatorsList(tvShow)}
+        {!!tvShow.cast.length && renderDetailedCastList(tvShow)}
+        {!!tvShow.genres.length && renderDetailedGenresList(tvShow)}
+        {!!tvShow.creators.length && renderDetailedCreatorsList(tvShow)}
       </DialogContent>
     </Dialog>
+  );
+
+  const renderSeasonsSelect = (data: TvShowDetailsData) => (
+    <FormControl variant="outlined">
+      <Select
+        id="seasons"
+        value={season}
+        onChange={(event) => setSeason(event.target.value as number)}
+        renderValue={(value) =>
+          `${t("season")} ${data.seasons[value as number].seasonNumber}`
+        }
+      >
+        {data.seasons.map(({ id, seasonNumber, episodeCount }, index) => (
+          <MenuItem key={id} value={index}>{`${t(
+            "season"
+          )} ${seasonNumber} (${episodeCount} ${t("episodes")})`}</MenuItem>
+        ))}
+      </Select>
+    </FormControl>
+  );
+
+  const renderSeasonsHeader = (data: TvShowDetailsData) => (
+    <div className={classes.seasonsHeader}>
+      <Typography variant="h6" component="h5">
+        {t("episodes")}
+      </Typography>
+      {renderSeasonsSelect(data)}
+    </div>
+  );
+
+  const renderSeasons = (data: TvShowDetailsData) => (
+    <div className={classes.seasons}>{renderSeasonsHeader(data)}</div>
   );
 
   return (
@@ -274,7 +315,8 @@ const TvShowDetails = ({ showErrorMessage }: CommonProps) => {
       {data?.logo && renderLogo(data.logo)}
       {data?.title && renderTitle(data.title)}
       {data && renderDetails(data)}
-      {!!data?.cast?.length && renderDetailedCast(data)}
+      {!!data?.cast?.length && renderDetailed(data)}
+      {!!data?.seasons?.length && renderSeasons(data)}
     </div>
   );
 };
@@ -310,7 +352,7 @@ const useStyles = makeStyles((theme) => ({
     alignItems: "center",
     position: "absolute",
     top: theme.spacing(45),
-    right: theme.spacing(2),
+    right: theme.spacing(4),
   },
   title: {
     margin: theme.spacing(2, 3, 0),
@@ -329,6 +371,20 @@ const useStyles = makeStyles((theme) => ({
   },
   contentRatingText: {
     lineHeight: 0,
+  },
+  seasons: {
+    display: "flex",
+    flexDirection: "column",
+    margin: theme.spacing(2, 3, 2),
+    [theme.breakpoints.down("md")]: {
+      margin: theme.spacing(2, 1, 0),
+    },
+  },
+  seasonsHeader: {
+    display: "flex",
+    flexDirection: "row",
+    justifyContent: "space-between",
+    alignItems: "center",
   },
 }));
 

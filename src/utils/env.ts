@@ -1,7 +1,8 @@
 class Env {
   getTMDBApiBaseUrl = (): string => this.get("REACT_APP_TMDB_API_BASE_URL");
 
-  getTMDBImageApiBaseUrl = (): string => this.get("REACT_APP_TMDB_IMAGE_API_BASE_URL");
+  getTMDBImageApiBaseUrl = (): string =>
+    this.get("REACT_APP_TMDB_IMAGE_API_BASE_URL");
 
   getTMDBApiKey = (): string => this.get("REACT_APP_TMDB_API_KEY");
 

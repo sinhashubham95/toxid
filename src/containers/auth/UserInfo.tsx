@@ -5,10 +5,10 @@ import {
   ReactNode,
   useEffect,
   useState,
-} from 'react';
-import { useRecoilState, useRecoilValue } from 'recoil';
-import { useHistory, useParams } from 'react-router-dom';
-import { useTranslation } from 'react-i18next';
+} from "react";
+import { useRecoilState, useRecoilValue } from "recoil";
+import { useHistory, useParams } from "react-router-dom";
+import { useTranslation } from "react-i18next";
 import {
   Button,
   CircularProgress,
@@ -20,20 +20,23 @@ import {
   TextField,
   TextFieldProps,
 } from "@material-ui/core";
-import { Autocomplete, AutocompleteRenderInputParams } from '@material-ui/lab';
-import DateFnsUtils from '@date-io/date-fns';
-import { MuiPickersUtilsProvider, KeyboardDatePicker } from '@material-ui/pickers';
+import { Autocomplete, AutocompleteRenderInputParams } from "@material-ui/lab";
+import DateFnsUtils from "@date-io/date-fns";
+import {
+  MuiPickersUtilsProvider,
+  KeyboardDatePicker,
+} from "@material-ui/pickers";
 
-import ProfilePhoto from '../../components/ProfilePhoto';
+import ProfilePhoto from "../../components/ProfilePhoto";
 import authInfo from "../../recoil/atoms/auth/authInfo";
-import auth from '../../utils/auth';
-import storage from '../../utils/storage';
-import { BasicInfo, Country } from '../../types/auth';
-import { CommonProps } from '../../types/common';
-import { PROFILE_PHOTO } from '../../constants/constants';
-import { COUNTRIES } from '../../constants/countries';
-import isMandatoryUserInfoAvailableSelector from '../../recoil/selectors/auth/isMandatoryUserInfoAvailable';
-import { HOME } from '../../constants/routes';
+import auth from "../../utils/auth";
+import storage from "../../utils/storage";
+import { BasicInfo, Country } from "../../types/auth";
+import { CommonProps } from "../../types/common";
+import { PROFILE_PHOTO } from "../../constants/constants";
+import { COUNTRIES } from "../../constants/countries";
+import isMandatoryUserInfoAvailableSelector from "../../recoil/selectors/auth/isMandatoryUserInfoAvailable";
+import { HOME } from "../../constants/routes";
 
 const UserInfo = ({ showErrorMessage }: CommonProps) => {
   const classes = useStyles();
@@ -43,10 +46,14 @@ const UserInfo = ({ showErrorMessage }: CommonProps) => {
   const { t } = useTranslation();
   const history = useHistory();
 
-  const isMandatoryUserInfoAvailable = useRecoilValue(isMandatoryUserInfoAvailableSelector);
+  const isMandatoryUserInfoAvailable = useRecoilValue(
+    isMandatoryUserInfoAvailableSelector
+  );
 
   const [info, setInfo] = useRecoilState(authInfo);
-  const [basicInfo, setBasicInfo] = useState<BasicInfo>(auth.getBasicInfo(info.details));
+  const [basicInfo, setBasicInfo] = useState<BasicInfo>(
+    auth.getBasicInfo(info.details)
+  );
 
   const [loading, setLoading] = useState(false);
 
@@ -61,10 +68,13 @@ const UserInfo = ({ showErrorMessage }: CommonProps) => {
     uploadFile(file);
   };
 
-  const onChange = (key: string): ChangeEventHandler<HTMLTextAreaElement | HTMLInputElement> => (event) => setBasicInfo({
-    ...basicInfo,
-    [key]: event.target.value,
-  });
+  const onChange =
+    (key: string): ChangeEventHandler<HTMLTextAreaElement | HTMLInputElement> =>
+    (event) =>
+      setBasicInfo({
+        ...basicInfo,
+        [key]: event.target.value,
+      });
 
   const onDOBChange = (date: Date | null) => {
     if (date) {
@@ -96,7 +106,10 @@ const UserInfo = ({ showErrorMessage }: CommonProps) => {
   const onSkip = () => history.replace(HOME);
 
   const uploadFile = async (file: File) => {
-    const result = await storage.uploadFile(`${info.details?.userId}-${PROFILE_PHOTO}`, file);
+    const result = await storage.uploadFile(
+      `${info.details?.userId}-${PROFILE_PHOTO}`,
+      file
+    );
     if (result.error) {
       // some error occurred
       showErrorMessage(result.error.message);
@@ -118,77 +131,84 @@ const UserInfo = ({ showErrorMessage }: CommonProps) => {
     />
   );
 
-  const renderTextField = (xs?: boolean | GridSize, sm?: boolean | GridSize) => (
-    autoComplete: string,
-    name: string,
-    value: string,
-    props?: TextFieldProps,
-  ) => (
-    <Grid item xs={xs} sm={sm}>
-      <TextField
-        autoComplete={autoComplete}
-        name={name}
-        variant="outlined"
-        required
-        fullWidth
-        id={name}
-        label={t(name)}
-        value={value}
-        onChange={onChange(name)}
-        {...props}
-      />
-    </Grid>
-  );
+  const renderTextField =
+    (xs?: boolean | GridSize, sm?: boolean | GridSize) =>
+    (
+      autoComplete: string,
+      name: string,
+      value: string,
+      props?: TextFieldProps
+    ) =>
+      (
+        <Grid item xs={xs} sm={sm}>
+          <TextField
+            autoComplete={autoComplete}
+            name={name}
+            variant="outlined"
+            required
+            fullWidth
+            id={name}
+            label={t(name)}
+            value={value}
+            onChange={onChange(name)}
+            {...props}
+          />
+        </Grid>
+      );
 
-  const renderSelect = (xs?: boolean | GridSize, sm?: boolean | GridSize) => <T,>(
-    name: string,
-    options: Array<T>,
-    getOptionLabel: (option: unknown) => string,
-    renderOption: (option: unknown) => ReactNode,
-    renderInput: (params: AutocompleteRenderInputParams) => ReactNode,
-    value: T | null,
-    onChange: (event: ChangeEvent<{}>, newValue: T | null) => void,
-  ) => (
-    <Grid item xs={xs} sm={sm}>
-      <Autocomplete
-        id={name}
-        options={options}
-        autoHighlight
-        getOptionLabel={getOptionLabel}
-        renderOption={renderOption}
-        renderInput={renderInput}
-        value={value}
-        onChange={onChange}
-      />
-    </Grid>
-  );
+  const renderSelect =
+    (xs?: boolean | GridSize, sm?: boolean | GridSize) =>
+    <T,>(
+      name: string,
+      options: Array<T>,
+      getOptionLabel: (option: unknown) => string,
+      renderOption: (option: unknown) => ReactNode,
+      renderInput: (params: AutocompleteRenderInputParams) => ReactNode,
+      value: T | null,
+      onChange: (event: ChangeEvent<{}>, newValue: T | null) => void
+    ) =>
+      (
+        <Grid item xs={xs} sm={sm}>
+          <Autocomplete
+            id={name}
+            options={options}
+            autoHighlight
+            getOptionLabel={getOptionLabel}
+            renderOption={renderOption}
+            renderInput={renderInput}
+            value={value}
+            onChange={onChange}
+          />
+        </Grid>
+      );
 
-  const renderCountryCode = () => renderSelect(12, 5)<Country>(
-    "countryCode",
-    Object.values(COUNTRIES),
-    (option: unknown) => (option as Country).label,
-    (option: unknown) => (
-      <Fragment>
-        <span>{auth.countryToFlag((option as Country).code)}</span>
-        ({(option as Country).code}) +{(option as Country).phone}
-      </Fragment>
-    ),
-    (params: AutocompleteRenderInputParams) => (
-      <TextField
-        {...params}
-        label={t("countryCode")}
-        variant="outlined"
-        required
-        inputProps={{
-          ...params.inputProps,
-          autoComplete: 'countryCode',
-        }}
-      />
-    ),
-    basicInfo.country,
-    (_event: any, newValue: Country | null) =>
-      newValue && setBasicInfo({ ...basicInfo, country: newValue }),
-  );
+  const renderCountryCode = () =>
+    renderSelect(12, 5)<Country>(
+      "countryCode",
+      Object.values(COUNTRIES),
+      (option: unknown) => (option as Country).label,
+      (option: unknown) => (
+        <Fragment>
+          <span>{auth.countryToFlag((option as Country).code)}</span>(
+          {(option as Country).code}) +{(option as Country).phone}
+        </Fragment>
+      ),
+      (params: AutocompleteRenderInputParams) => (
+        <TextField
+          {...params}
+          label={t("countryCode")}
+          variant="outlined"
+          required
+          inputProps={{
+            ...params.inputProps,
+            autoComplete: "countryCode",
+          }}
+        />
+      ),
+      basicInfo.country,
+      (_event: any, newValue: Country | null) =>
+        newValue && setBasicInfo({ ...basicInfo, country: newValue })
+    );
 
   const renderDOB = () => (
     <Grid item xs={12}>
@@ -204,7 +224,7 @@ const UserInfo = ({ showErrorMessage }: CommonProps) => {
           value={basicInfo.dob}
           onChange={onDOBChange}
           KeyboardButtonProps={{
-            'aria-label': 'Change date of birth',
+            "aria-label": "Change date of birth",
           }}
         />
       </MuiPickersUtilsProvider>
@@ -245,12 +265,7 @@ const UserInfo = ({ showErrorMessage }: CommonProps) => {
       alignContent="center"
       alignItems="center"
     >
-      <Button
-        type="submit"
-        variant="text"
-        color="secondary"
-        onClick={onSkip}
-      >
+      <Button type="submit" variant="text" color="secondary" onClick={onSkip}>
         {JSON.parse(init) ? t("skip") : t("done")}
       </Button>
     </Grid>
@@ -259,11 +274,15 @@ const UserInfo = ({ showErrorMessage }: CommonProps) => {
   const renderForm = () => (
     <form className={classes.form} noValidate>
       <Grid container spacing={2}>
-        {renderTextField(12)("email", "email", basicInfo.email, { autoFocus: true })}
+        {renderTextField(12)("email", "email", basicInfo.email, {
+          autoFocus: true,
+        })}
         {renderTextField(12, 6)("fName", "firstName", basicInfo.firstName)}
         {renderTextField(12, 6)("lName", "lastName", basicInfo.lastName)}
         {renderCountryCode()}
-        {renderTextField(12, 7)("pNum", "phoneNumber", basicInfo.phoneNumber, { type: "number" })}
+        {renderTextField(12, 7)("pNum", "phoneNumber", basicInfo.phoneNumber, {
+          type: "number",
+        })}
         {renderDOB()}
         {loading && renderLoading()}
         {!loading && renderSubmit()}
@@ -286,19 +305,19 @@ const UserInfo = ({ showErrorMessage }: CommonProps) => {
 const useStyles = makeStyles((theme) => ({
   paper: {
     marginTop: theme.spacing(8),
-    display: 'flex',
-    flexDirection: 'column',
-    alignItems: 'center',
+    display: "flex",
+    flexDirection: "column",
+    alignItems: "center",
   },
   avatarInput: {
-    display: 'none',
+    display: "none",
   },
   avatar: {
     width: theme.spacing(8),
     height: theme.spacing(8),
   },
   form: {
-    width: '100%',
+    width: "100%",
     marginTop: theme.spacing(3),
   },
   loading: {

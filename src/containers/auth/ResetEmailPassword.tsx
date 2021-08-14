@@ -1,9 +1,18 @@
-import { FunctionComponent, ChangeEventHandler } from 'react';
-import { Avatar, Button, Grid, Link, makeStyles, TextField, Typography, CircularProgress } from '@material-ui/core';
-import { LockOutlined } from '@material-ui/icons';
-import { useState } from 'react';
-import { useTranslation } from 'react-i18next';
-import { AuthErrorInfo, AuthProps } from '../../types/auth';
+import { FunctionComponent, ChangeEventHandler } from "react";
+import {
+  Avatar,
+  Button,
+  Grid,
+  Link,
+  makeStyles,
+  TextField,
+  Typography,
+  CircularProgress,
+} from "@material-ui/core";
+import { LockOutlined } from "@material-ui/icons";
+import { useState } from "react";
+import { useTranslation } from "react-i18next";
+import { AuthErrorInfo, AuthProps } from "../../types/auth";
 
 const ResetEmailPassword: FunctionComponent<AuthProps> = ({
   title,
@@ -17,7 +26,7 @@ const ResetEmailPassword: FunctionComponent<AuthProps> = ({
   const { t } = useTranslation();
 
   const [loading, setLoading] = useState(false);
-  const [email, setEmail] = useState('');
+  const [email, setEmail] = useState("");
 
   const onSubmit = async () => {
     setLoading(true);
@@ -25,7 +34,7 @@ const ResetEmailPassword: FunctionComponent<AuthProps> = ({
     if (error) {
       showErrorMessage(error.message);
     } else {
-      showSuccessMessage(t('successReset'));
+      showSuccessMessage(t("successReset"));
     }
     setLoading(false);
   };
@@ -47,7 +56,7 @@ const ResetEmailPassword: FunctionComponent<AuthProps> = ({
     autoComplete: string,
     value: string,
     onChange: ChangeEventHandler<HTMLTextAreaElement | HTMLInputElement>,
-    autoFocus: boolean,
+    autoFocus: boolean
   ) => (
     <TextField
       variant="outlined"
@@ -103,7 +112,13 @@ const ResetEmailPassword: FunctionComponent<AuthProps> = ({
 
   const renderForm = () => (
     <form className={classes.form} noValidate>
-      {renderTextField("email", "email", email, (event) => setEmail(event.target.value), true)}
+      {renderTextField(
+        "email",
+        "email",
+        email,
+        (event) => setEmail(event.target.value),
+        true
+      )}
       {loading && renderLoading()}
       {!loading && renderSubmit()}
       {renderExtrasGrid()}
@@ -119,19 +134,19 @@ const ResetEmailPassword: FunctionComponent<AuthProps> = ({
   );
 };
 
-const useStyles = makeStyles(theme => ({
+const useStyles = makeStyles((theme) => ({
   paper: {
     margin: theme.spacing(8, 4),
-    display: 'flex',
-    flexDirection: 'column',
-    alignItems: 'center',
+    display: "flex",
+    flexDirection: "column",
+    alignItems: "center",
   },
   avatar: {
     margin: theme.spacing(1),
     backgroundColor: theme.palette.secondary.main,
   },
   form: {
-    width: '100%',
+    width: "100%",
     marginTop: theme.spacing(1),
   },
   loading: {

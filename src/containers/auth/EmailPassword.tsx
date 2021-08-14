@@ -1,5 +1,5 @@
-import { FunctionComponent, MouseEventHandler } from 'react';
-import { useHistory } from 'react-router-dom';
+import { FunctionComponent, MouseEventHandler } from "react";
+import { useHistory } from "react-router-dom";
 import {
   Avatar,
   Button,
@@ -16,15 +16,15 @@ import {
   IconButton,
   useTheme,
   useMediaQuery,
-} from '@material-ui/core';
-import { LockOutlined, Visibility, VisibilityOff } from '@material-ui/icons';
-import { useState } from 'react';
-import { useTranslation } from 'react-i18next';
-import { AuthInfo, AuthProps } from '../../types/auth';
-import withButtonColor from '../../components/hoc/withButtonColor';
-import { OverridableComponent } from '@material-ui/core/OverridableComponent';
-import { ChangeEventHandler } from 'react';
-import { InputAdornment } from '@material-ui/core';
+} from "@material-ui/core";
+import { LockOutlined, Visibility, VisibilityOff } from "@material-ui/icons";
+import { useState } from "react";
+import { useTranslation } from "react-i18next";
+import { AuthInfo, AuthProps } from "../../types/auth";
+import withButtonColor from "../../components/hoc/withButtonColor";
+import { OverridableComponent } from "@material-ui/core/OverridableComponent";
+import { ChangeEventHandler } from "react";
+import { InputAdornment } from "@material-ui/core";
 
 const EmailPassword: FunctionComponent<AuthProps> = ({
   title,
@@ -37,19 +37,22 @@ const EmailPassword: FunctionComponent<AuthProps> = ({
 
   // handling media
   const theme = useTheme();
-  const belowSm = useMediaQuery(theme.breakpoints.down('sm'));
+  const belowSm = useMediaQuery(theme.breakpoints.down("sm"));
 
   const history = useHistory();
   const { t } = useTranslation();
 
   const [loading, setLoading] = useState(false);
-  const [email, setEmail] = useState('');
+  const [email, setEmail] = useState("");
   const [showPassword, setShowPassword] = useState(false);
-  const [password, setPassword] = useState('');
+  const [password, setPassword] = useState("");
 
-  const onToggleShowPassword: MouseEventHandler<HTMLButtonElement> = () => setShowPassword(!showPassword);
+  const onToggleShowPassword: MouseEventHandler<HTMLButtonElement> = () =>
+    setShowPassword(!showPassword);
 
-  const onMouseDownShowPassword: MouseEventHandler<HTMLButtonElement> = (event) => event.preventDefault();
+  const onMouseDownShowPassword: MouseEventHandler<HTMLButtonElement> = (
+    event
+  ) => event.preventDefault();
 
   const onSubmit = async () => {
     setLoading(true);
@@ -84,7 +87,7 @@ const EmailPassword: FunctionComponent<AuthProps> = ({
     autoComplete: string,
     value: string,
     onChange: ChangeEventHandler<HTMLTextAreaElement | HTMLInputElement>,
-    autoFocus: boolean,
+    autoFocus: boolean
   ) => (
     <TextField
       variant="outlined"
@@ -103,17 +106,13 @@ const EmailPassword: FunctionComponent<AuthProps> = ({
   );
 
   const renderPassword = () => (
-    <FormControl
-      fullWidth
-      margin="normal"
-      variant="outlined"
-    >
+    <FormControl fullWidth margin="normal" variant="outlined">
       <InputLabel htmlFor="password" required>
-        {t('password')}
+        {t("password")}
       </InputLabel>
       <OutlinedInput
         id="password"
-        type={showPassword ? 'text' : 'password'}
+        type={showPassword ? "text" : "password"}
         required
         value={password}
         onChange={(event) => setPassword(event.target.value)}
@@ -185,7 +184,7 @@ const EmailPassword: FunctionComponent<AuthProps> = ({
     title: string,
     color: { [key: string]: string },
     IconComponent: OverridableComponent<SvgIconTypeMap<{}, "svg">>,
-    handler: Function,
+    handler: Function
   ) => {
     const ColorButton = withButtonColor(color[900], color[900], color["A700"]);
     return (
@@ -218,7 +217,13 @@ const EmailPassword: FunctionComponent<AuthProps> = ({
 
   const renderForm = () => (
     <form className={classes.form} noValidate>
-      {renderTextField("email", "email", email, (event) => setEmail(event.target.value), true)}
+      {renderTextField(
+        "email",
+        "email",
+        email,
+        (event) => setEmail(event.target.value),
+        true
+      )}
       {renderPassword()}
       {loading && renderLoading()}
       {!loading && renderSubmit()}
@@ -236,19 +241,19 @@ const EmailPassword: FunctionComponent<AuthProps> = ({
   );
 };
 
-const useStyles = makeStyles(theme => ({
+const useStyles = makeStyles((theme) => ({
   paper: {
     margin: theme.spacing(8, 4),
-    display: 'flex',
-    flexDirection: 'column',
-    alignItems: 'center',
+    display: "flex",
+    flexDirection: "column",
+    alignItems: "center",
   },
   avatar: {
     margin: theme.spacing(1),
     backgroundColor: theme.palette.secondary.main,
   },
   form: {
-    width: '100%',
+    width: "100%",
     marginTop: theme.spacing(1),
   },
   loading: {
@@ -261,8 +266,8 @@ const useStyles = makeStyles(theme => ({
     margin: theme.spacing(2, 0, 0),
   },
   extraLink: {
-    '&:hover': {
-      cursor: 'pointer',
+    "&:hover": {
+      cursor: "pointer",
     },
   },
   extraButton: {

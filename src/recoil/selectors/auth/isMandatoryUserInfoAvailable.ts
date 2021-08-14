@@ -1,5 +1,5 @@
-import { selector } from 'recoil';
-import authInfo from '../../atoms/auth/authInfo';
+import { selector } from "recoil";
+import authInfo from "../../atoms/auth/authInfo";
 
 const isMandatoryUserInfoAvailable = selector({
   key: "isUserInfoAvailable",

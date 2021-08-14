@@ -9,7 +9,7 @@ const ContentTopRatedMovies = withGrid<Genre, Movie>(
   "topRatedMovies",
   () => undefined,
   (movie: Movie) => movie.id,
-  movies.getTopRatedMovies,
+  movies.getTopRatedMovies
 );
 
 export default ContentTopRatedMovies;

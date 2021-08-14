@@ -1,6 +1,6 @@
-import { selector } from 'recoil';
-import { AuthState } from '../../../types/auth';
-import authInfo from '../../atoms/auth/authInfo';
+import { selector } from "recoil";
+import { AuthState } from "../../../types/auth";
+import authInfo from "../../atoms/auth/authInfo";
 
 const isSignedIn = selector({
   key: "isSignedIn",

@@ -1,24 +1,23 @@
 import { MouseEvent, useState } from "react";
-import { useRecoilState } from 'recoil';
+import { useRecoilState } from "recoil";
 import { useHistory } from "react-router-dom";
 import { useTranslation } from "react-i18next";
 import { Menu, MenuItem } from "@material-ui/core";
-import authInfo from '../recoil/atoms/auth/authInfo';
+import authInfo from "../recoil/atoms/auth/authInfo";
 import auth from "../utils/auth";
 import { CommonProps } from "../types/common";
 import { BASIC_INFO } from "../constants/routes";
 import ProfilePhoto from "../components/ProfilePhoto";
 
-const Profile = ({
-  showErrorMessage,
-}: CommonProps) => {
+const Profile = ({ showErrorMessage }: CommonProps) => {
   const { t } = useTranslation();
   const history = useHistory();
   const [info] = useRecoilState(authInfo);
 
   const [anchor, setAnchor] = useState<HTMLElement | null>(null);
 
-  const onClick = (event: MouseEvent<HTMLButtonElement>) => setAnchor(event.currentTarget);
+  const onClick = (event: MouseEvent<HTMLButtonElement>) =>
+    setAnchor(event.currentTarget);
 
   const onClose = () => setAnchor(null);
 
