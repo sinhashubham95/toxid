@@ -1,4 +1,4 @@
-import UserInfo from './auth/UserInfo';
+import UserInfo from "./auth/UserInfo";
 
 const AuthUserInfo = UserInfo;
 

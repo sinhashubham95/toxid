@@ -1,8 +1,8 @@
-import { atom } from 'recoil';
-import { AuthInfo, AuthState } from '../../../types/auth';
+import { atom } from "recoil";
+import { AuthInfo, AuthState } from "../../../types/auth";
 
 const authInfo = atom<AuthInfo>({
-  key: 'authInfo',
+  key: "authInfo",
   default: {
     state: AuthState.SignedOut,
   },

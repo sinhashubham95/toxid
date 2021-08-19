@@ -1,11 +1,11 @@
-import { EXPLORE_MOVIES } from '../constants/routes';
-import { Genres, Genre } from '../types/genres';
-import { Movie } from '../types/movies';
-import genres from '../utils/genres';
-import movies from '../utils/movies';
-import Movies from './content/Movies';
-import withList from './hoc/withList';
-import withSlider from './hoc/withSlider';
+import { EXPLORE_MOVIES } from "../constants/routes";
+import { Genres, Genre } from "../types/genres";
+import { Movie } from "../types/movies";
+import genres from "../utils/genres";
+import movies from "../utils/movies";
+import Movies from "./content/Movies";
+import withList from "./hoc/withList";
+import withSlider from "./hoc/withSlider";
 
 const ContentMovies = withList<Genre, Genres>(
   withSlider<Genre, Movie>(
@@ -13,9 +13,9 @@ const ContentMovies = withList<Genre, Genres>(
     (genre?: Genre) => `${EXPLORE_MOVIES}/${genre?.id}/${genre?.title}`,
     (genre?: Genre) => genre?.title,
     (item: Movie) => item.id,
-    movies.getAllMovies,
+    movies.getAllMovies
   ),
-  genres.getMovieGenres,
+  genres.getMovieGenres
 );
 
 export default ContentMovies;

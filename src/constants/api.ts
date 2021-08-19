@@ -1,6 +1,6 @@
 export const GET_TV_GENRES_PATH = "/genre/tv/list";
 
-export const GET_ALL_TV_SHOWS_PATH = "/discover/tv?sort_by=popularity.desc"
+export const GET_ALL_TV_SHOWS_PATH = "/discover/tv?sort_by=popularity.desc";
 
 export const GET_TV_SHOW_DETAIL_PATH = "/tv";
 

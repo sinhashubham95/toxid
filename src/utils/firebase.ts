@@ -1,4 +1,4 @@
-import firebase from 'firebase';
+import firebase from "firebase";
 
 firebase.initializeApp({
   apiKey: "AIzaSyCmwV2qgwkn2qjkdkpGKSByZ3wql_S_rno",
@@ -7,5 +7,5 @@ firebase.initializeApp({
   storageBucket: "toxid-29068.appspot.com",
   messagingSenderId: "16031035729",
   appId: "1:16031035729:web:16536b223d9e402d926370",
-  measurementId: "G-VYYGYFZDKQ"
+  measurementId: "G-VYYGYFZDKQ",
 });

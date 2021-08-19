@@ -2,7 +2,7 @@ import { createRef, useEffect, useState, FunctionComponent } from "react";
 import Slider from "react-slick";
 import { useHistory } from "react-router-dom";
 import { useTranslation } from "react-i18next";
-import clsx from 'clsx';
+import clsx from "clsx";
 import {
   makeStyles,
   Typography,
@@ -16,27 +16,29 @@ import ChevronLeft from "@material-ui/icons/ChevronLeft";
 import ChevronRight from "@material-ui/icons/ChevronRight";
 import { PaginatedData, PaginatedResponse } from "../../types/common";
 
-const withSlider = <S, T,>(
-  Component: FunctionComponent<{
-    data: T,
-    popover: boolean,
-  }>,
-  location: string | ((param?: S) => string),
-  getTitle: (param?: S) => string | undefined,
-  getKey: (item: T) => number,
-  fetcher: (param?: S, pageNumber?: number) => Promise<PaginatedResponse<T>>,
-) => ({
-  data: param,
-  showErrorMessage,
-}: {
-  data?: S,
-  showErrorMessage: (message: string) => void,
-}) => {
+const withSlider =
+  <S, T>(
+    Component: FunctionComponent<{
+      data: T;
+      popover: boolean;
+    }>,
+    location: string | ((param?: S) => string),
+    getTitle: (param?: S) => string | undefined,
+    getKey: (item: T) => number,
+    fetcher: (param?: S, pageNumber?: number) => Promise<PaginatedResponse<T>>
+  ) =>
+  ({
+    data: param,
+    showErrorMessage,
+  }: {
+    data?: S;
+    showErrorMessage: (message: string) => void;
+  }) => {
     const classes = useStyles();
 
     // handling media
     const theme = useTheme();
-    const belowSm = useMediaQuery(theme.breakpoints.down('sm'));
+    const belowSm = useMediaQuery(theme.breakpoints.down("sm"));
 
     const history = useHistory();
 
@@ -80,7 +82,7 @@ const withSlider = <S, T,>(
     const onSliderChange = async (index: number) => {
       const slides = belowSm ? 2 : 5;
       setSlideIndex(index);
-      if (index >= (data.data.length - 2 * slides)) {
+      if (index >= data.data.length - 2 * slides) {
         // in this case we need to fetch the next page
         // when we are on the second last page
         const result = await fetcher(param, data.pagesFetched + 1);
@@ -100,8 +102,11 @@ const withSlider = <S, T,>(
     const renderTitle = () => (
       <ButtonBase
         className={classes.titleButton}
-        onClick={() => (typeof location === 'string' ?
-          history.replace(location) : history.replace(location(param)))}
+        onClick={() =>
+          typeof location === "string"
+            ? history.replace(location)
+            : history.replace(location(param))
+        }
         focusVisibleClassName={classes.focusVisibleTitleButton}
       >
         <Typography component="h5" variant="h6" className={classes.title}>
@@ -118,7 +123,7 @@ const withSlider = <S, T,>(
       item: T,
       IconComponent: OverridableComponent<SvgIconTypeMap<{}, "svg">>,
       onClick: () => void,
-      iconStyle: string,
+      iconStyle: string
     ) => (
       <ButtonBase
         focusRipple
@@ -128,36 +133,31 @@ const withSlider = <S, T,>(
         focusVisibleClassName={classes.focusVisibleButtonCard}
       >
         <span className={classes.backdrop} />
-        <Component
-          data={item}
-          popover={false}
-        />
+        <Component data={item} popover={false} />
         <IconComponent
           fontSize={belowSm ? "small" : "large"}
-          className={
-            clsx(
-              classes.button,
-              iconStyle,
-              { [classes.hoverButton]: enter },
-            )
-          }
+          className={clsx(classes.button, iconStyle, {
+            [classes.hoverButton]: enter,
+          })}
         />
       </ButtonBase>
     );
 
-    const renderCardWithLeftButton = (item: T) => renderCardWithButton(
-      item,
-      ChevronLeft,
-      () => slider.current?.slickPrev(),
-      classes.leftButton,
-    );
+    const renderCardWithLeftButton = (item: T) =>
+      renderCardWithButton(
+        item,
+        ChevronLeft,
+        () => slider.current?.slickPrev(),
+        classes.leftButton
+      );
 
-    const renderCardWithRightButton = (item: T) => renderCardWithButton(
-      item,
-      ChevronRight,
-      () => slider.current?.slickNext(),
-      classes.rightButton,
-    );
+    const renderCardWithRightButton = (item: T) =>
+      renderCardWithButton(
+        item,
+        ChevronRight,
+        () => slider.current?.slickNext(),
+        classes.rightButton
+      );
 
     const renderCard = (slides: number) => (item: T, index: number) => {
       const total = data.data.length;
@@ -177,9 +177,11 @@ const withSlider = <S, T,>(
         <Component
           key={getKey(item)}
           data={item}
-          popover={(index >= left && index <= right) ||
-            (left < 0 && (index >= (left + total) || index <= right)) ||
-            (right >= total && (index >= left || index <= right % total))}
+          popover={
+            (index >= left && index <= right) ||
+            (left < 0 && (index >= left + total || index <= right)) ||
+            (right >= total && (index >= left || index <= right % total))
+          }
         />
       );
     };
@@ -202,7 +204,11 @@ const withSlider = <S, T,>(
     return (
       <div className={classes.root}>
         {renderTitle()}
-        <div className={classes.page} onMouseEnter={onEnter} onMouseLeave={onLeave}>
+        <div
+          className={classes.page}
+          onMouseEnter={onEnter}
+          onMouseLeave={onLeave}
+        >
           {belowSm && renderSlider(2)}
           {!belowSm && renderSlider(5)}
         </div>
@@ -214,27 +220,27 @@ export default withSlider;
 
 const useStyles = makeStyles((theme) => ({
   root: {
-    display: 'flex',
-    flexDirection: 'column',
-    justifyContent: 'flex-start',
-    width: '100%',
+    display: "flex",
+    flexDirection: "column",
+    justifyContent: "flex-start",
+    width: "100%",
     marginBottom: theme.spacing(4),
   },
   titleButton: {
-    display: 'flex',
-    width: 'fit-content',
-    flexDirection: 'row',
-    justifyContent: 'flex-start',
-    alignItems: 'center',
+    display: "flex",
+    width: "fit-content",
+    flexDirection: "row",
+    justifyContent: "flex-start",
+    alignItems: "center",
     margin: theme.spacing(1, 4, 1),
-    '&:hover, &$focusVisibleTitleButton': {
-      '& $title': {
+    "&:hover, &$focusVisibleTitleButton": {
+      "& $title": {
         opacity: 0.7,
       },
-      '& $explore': {
-        transform: 'scale(1)',
+      "& $explore": {
+        transform: "scale(1)",
       },
-      '& $right': {
+      "& $right": {
         opacity: 0.7,
       },
     },
@@ -242,47 +248,44 @@ const useStyles = makeStyles((theme) => ({
   focusVisibleTitleButton: {},
   title: {
     opacity: 1,
-    transition: theme.transitions.create('opacity'),
+    transition: theme.transitions.create("opacity"),
     margin: theme.spacing(0, 2, 0),
   },
   explore: {
-    transform: 'scale(0)',
-    transition: theme.transitions.create(
-      'transform',
-      {
-        easing: theme.transitions.easing.easeIn,
-        delay: 200,
-      },
-    ),
+    transform: "scale(0)",
+    transition: theme.transitions.create("transform", {
+      easing: theme.transitions.easing.easeIn,
+      delay: 200,
+    }),
   },
   right: {
     opacity: 0,
-    transition: theme.transitions.create('opacity'),
+    transition: theme.transitions.create("opacity"),
   },
   page: {
-    display: 'flex',
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'center',
+    display: "flex",
+    flexDirection: "row",
+    justifyContent: "space-between",
+    alignItems: "center",
   },
   slider: {
-    width: '100%',
+    width: "100%",
   },
   buttonCard: {
-    display: 'flex',
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'center',
+    display: "flex",
+    flexDirection: "row",
+    justifyContent: "space-between",
+    alignItems: "center",
     margin: 0,
     padding: 0,
-    '&:hover': {
+    "&:hover": {
       opacity: 0.4,
     },
-    '&:hover, &$focusVisibleButtonCard': {
-      '& $button': {
+    "&:hover, &$focusVisibleButtonCard": {
+      "& $button": {
         opacity: 1,
       },
-      '& $backdrop': {
+      "& $backdrop": {
         opacity: 0.15,
       },
     },
@@ -290,25 +293,25 @@ const useStyles = makeStyles((theme) => ({
   focusVisibleButtonCard: {},
   backdrop: {
     margin: theme.spacing(0, 2, 0),
-    position: 'absolute',
+    position: "absolute",
     left: 0,
     right: 0,
     top: 0,
     bottom: 0,
     backgroundColor: theme.palette.common.black,
     opacity: 0.4,
-    transition: theme.transitions.create('opacity'),
+    transition: theme.transitions.create("opacity"),
   },
   button: {
     zIndex: 1,
     opacity: 0,
-    transition: theme.transitions.create('opacity'),
-    position: 'absolute',
-    display: 'flex',
-    flexDirection: 'column',
-    justifyContent: 'center',
-    alignItems: 'center',
-    top: '50%',
+    transition: theme.transitions.create("opacity"),
+    position: "absolute",
+    display: "flex",
+    flexDirection: "column",
+    justifyContent: "center",
+    alignItems: "center",
+    top: "50%",
   },
   leftButton: {
     right: theme.spacing(2),

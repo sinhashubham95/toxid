@@ -8,7 +8,7 @@ export const FORGOT_PASSWORD = "/forgotPassword";
 
 export const BASIC_INFO = "/basicInfo";
 
-export const CONTENT = "/content"
+export const CONTENT = "/content";
 
 export const EXPLORE = "/explore";
 

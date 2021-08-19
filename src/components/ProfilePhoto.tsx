@@ -1,5 +1,5 @@
 import { makeStyles, IconButton, Avatar } from "@material-ui/core";
-import AccountCircleIcon from '@material-ui/icons/AccountCircle';
+import AccountCircleIcon from "@material-ui/icons/AccountCircle";
 import clsx from "clsx";
 import { ChangeEventHandler } from "react";
 import { ProfilePhotoProps } from "../types/common";
@@ -65,7 +65,7 @@ const ProfilePhoto = ({
 
 const useStyles = makeStyles((theme) => ({
   avatarInput: {
-    display: 'none',
+    display: "none",
   },
   avatar: {
     margin: theme.spacing(1),

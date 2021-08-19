@@ -9,7 +9,7 @@ const ContentPopularTvShows = withGrid<Genre, TvShow>(
   "popularTvShows",
   () => undefined,
   (tvShow: TvShow) => tvShow.id,
-  tvShows.getPopularTvShows,
+  tvShows.getPopularTvShows
 );
 
 export default ContentPopularTvShows;

@@ -7,9 +7,9 @@ import withGrid from "./hoc/withGrid";
 const ContentExploreTvShows = withGrid<Genre, TvShow>(
   TvShows,
   null,
-  (id?: number, title?: string) => id && title ? { id, title } : undefined,
+  (id?: number, title?: string) => (id && title ? { id, title } : undefined),
   (tvShow: TvShow) => tvShow.id,
-  tvShows.getAllTvShows,
+  tvShows.getAllTvShows
 );
 
 export default ContentExploreTvShows;

@@ -19,10 +19,7 @@ class Genres {
       if (status === 200) {
         const genres = data as GenresResponse;
         return {
-          data: genres.genres.map(({
-            id,
-            name,
-          }) => ({
+          data: genres.genres.map(({ id, name }) => ({
             id,
             title: name,
           })),
@@ -40,10 +37,7 @@ class Genres {
       if (status === 200) {
         const genres = data as GenresResponse;
         return {
-          data: genres.genres.map(({
-            id,
-            name,
-          }) => ({
+          data: genres.genres.map(({ id, name }) => ({
             id,
             title: name,
           })),
