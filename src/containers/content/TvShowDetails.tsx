@@ -26,6 +26,7 @@ import Rating from "@material-ui/lab/Rating";
 import { CommonProps } from "../../types/common";
 import tvShows from "../../utils/tvShows";
 import { TvShowDetailsData, VideoDetail } from "../../types/tvShows";
+import TvShowSeasonDetails from "./TvShowSeasonDetails";
 
 const TvShowDetails = ({ showErrorMessage }: CommonProps) => {
   const classes = useStyles();
@@ -306,6 +307,14 @@ const TvShowDetails = ({ showErrorMessage }: CommonProps) => {
     <div className={classes.seasons}>{renderSeasonsHeader(data)}</div>
   );
 
+  const renderSeasonDetails = (data: TvShowDetailsData) => (
+    <TvShowSeasonDetails
+      id={JSON.parse(id) as number}
+      seasonNumber={data.seasons[season].seasonNumber}
+      showErrorMessage={showErrorMessage}
+    />
+  );
+
   return (
     <div className={classes.root}>
       {!!data?.videos?.length && renderTrailer(data.videos[0])}
@@ -317,6 +326,7 @@ const TvShowDetails = ({ showErrorMessage }: CommonProps) => {
       {data && renderDetails(data)}
       {!!data?.cast?.length && renderDetailed(data)}
       {!!data?.seasons?.length && renderSeasons(data)}
+      {!!data?.seasons[season] && renderSeasonDetails(data)}
     </div>
   );
 };
@@ -375,7 +385,7 @@ const useStyles = makeStyles((theme) => ({
   seasons: {
     display: "flex",
     flexDirection: "column",
-    margin: theme.spacing(2, 3, 2),
+    margin: theme.spacing(2, 3, 0),
     [theme.breakpoints.down("md")]: {
       margin: theme.spacing(2, 1, 0),
     },

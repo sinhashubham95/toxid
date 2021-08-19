@@ -9,7 +9,7 @@ export interface TvShow {
   title: string;
   description: string;
   rating: number;
-};
+}
 
 export interface TvShowsResponse {
   page: number;
@@ -23,33 +23,33 @@ export interface TvShowsResponse {
     poster_path: string | null;
     backdrop_path: string | null;
     overview: string;
-  }>
-};
+  }>;
+}
 
 export interface CreatorDetail {
   id: number;
   name: string;
   imageUrl: string;
-};
+}
 
 export enum VideoSite {
   YouTube = "YouTube",
   Vimeo = "Vimeo",
-};
+}
 
 export enum VideoType {
   Clip = "Clip",
   Featurette = "Featurette",
   Teaser = "Teaser",
   Trailer = "Trailer",
-};
+}
 
 export interface VideoDetail {
   id: string;
   name: string;
   type: string;
   url: string;
-};
+}
 
 export interface SeasonDetail {
   id: number;
@@ -58,7 +58,7 @@ export interface SeasonDetail {
   description: string;
   episodeCount: number;
   imageUrl: string;
-};
+}
 
 export interface CastDetail {
   id: number;
@@ -66,7 +66,7 @@ export interface CastDetail {
   character: string;
   imageUrl: string;
   knownFor: string;
-};
+}
 
 export interface TvShowDetailsData {
   id: number;
@@ -83,11 +83,11 @@ export interface TvShowDetailsData {
   cast: Array<CastDetail>;
   contentRating: string;
   logo: string;
-};
+}
 
 export interface TvShowDetails extends ErrorResponse {
-  data?: TvShowDetailsData,
-};
+  data?: TvShowDetailsData;
+}
 
 export interface TvShowDetailsResponse {
   id: number;
@@ -145,4 +145,46 @@ export interface TvShowDetailsResponse {
       file_path: string;
     }>;
   };
-};
+}
+
+export interface EpisodeDetail {
+  id: number;
+  name: string;
+  description: string;
+  imageUrl: string;
+  episodeNumber: number;
+  releaseDate: string;
+  rating: number;
+}
+
+export interface TvShowSeasonDetailsData {
+  id: number;
+  name: string;
+  description: string;
+  imageUrl: string;
+  seasonNumber: number;
+  episodes: Array<EpisodeDetail>;
+  releaseDate: string;
+}
+
+export interface TvShowSeasonDetails extends ErrorResponse {
+  data?: TvShowSeasonDetailsData;
+}
+
+export interface TvShowSeasonDetailsResponse {
+  air_date: string;
+  episodes: Array<{
+    air_date: string;
+    episode_number: number;
+    id: number;
+    name: string;
+    overview: string;
+    still_path: string | null;
+    vote_average: number;
+  }>;
+  name: string;
+  overview: string;
+  id: number;
+  poster_path: string | null;
+  season_number: number;
+}

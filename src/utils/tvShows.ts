@@ -19,6 +19,9 @@ import {
   CastDetail,
   CreatorDetail,
   VideoType,
+  TvShowSeasonDetails,
+  TvShowSeasonDetailsResponse,
+  EpisodeDetail,
 } from "../types/tvShows";
 import { EN, GB, IN } from "../constants/constants";
 
@@ -74,7 +77,32 @@ class TvShows {
     }
   };
 
-  getTvShowSeasonDetails = async (id: number, seasonNumber: number) => {};
+  getTvShowSeasonDetails = async (
+    id: number,
+    seasonNumber: number
+  ): Promise<TvShowSeasonDetails> => {
+    try {
+      const { status, data } = await this.axios.get(
+        `${GET_TV_SHOW_DETAIL_PATH}/${id}/season/${seasonNumber}`
+      );
+      if (status === 200) {
+        return this.getTvShowSeasonDetailsResponse(
+          data as TvShowSeasonDetailsResponse
+        );
+      }
+      return {
+        error: {
+          message: data.status_message,
+        },
+      };
+    } catch (e) {
+      return {
+        error: {
+          message: e.message,
+        },
+      };
+    }
+  };
 
   private getImageUrl = (
     posterPath: string | null,
@@ -289,6 +317,43 @@ class TvShows {
       cast: this.getCast(tvShowDetails),
       contentRating: this.getContentRating(tvShowDetails),
       logo: this.getLogo(tvShowDetails),
+    },
+  });
+
+  private getEpisodeDetails = (
+    tvShowSeasonDetails: TvShowSeasonDetailsResponse
+  ): Array<EpisodeDetail> =>
+    tvShowSeasonDetails.episodes.map<EpisodeDetail>(
+      ({
+        id,
+        name,
+        overview,
+        still_path,
+        episode_number,
+        air_date,
+        vote_average,
+      }) => ({
+        id,
+        name,
+        description: overview,
+        imageUrl: this.getImageUrl(still_path, null),
+        episodeNumber: episode_number,
+        releaseDate: air_date,
+        rating: vote_average,
+      })
+    );
+
+  private getTvShowSeasonDetailsResponse = (
+    tvShowSeasonDetails: TvShowSeasonDetailsResponse
+  ): TvShowSeasonDetails => ({
+    data: {
+      id: tvShowSeasonDetails.id,
+      name: tvShowSeasonDetails.name,
+      description: tvShowSeasonDetails.overview,
+      imageUrl: this.getImageUrl(tvShowSeasonDetails.poster_path, null),
+      seasonNumber: tvShowSeasonDetails.season_number,
+      episodes: this.getEpisodeDetails(tvShowSeasonDetails),
+      releaseDate: tvShowSeasonDetails.air_date,
     },
   });
 }
